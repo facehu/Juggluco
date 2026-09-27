@@ -193,14 +193,13 @@ static boolean putsensor(boolean libre3,byte[] textbytes) {
       if(status!=0) {
          String reason=object.getString("reason");
          if(status==20) {
-            if(reason.contains("wrongDeviceInToken")) {
+            if(reason!=null&&reason.contains("wrongDeviceInToken")) {
                switch(i) {
                   case 0:{
                   if(!postgetauth(libre3)) {
-                     if(!libreconfig(libre3,false))
-                        return false;
-                     i=1;
-                        }
+                       if(!libreconfig(libre3,false)) return false;
+                       i=1;
+                       }
                      };break;
                     case 1: {
                      if(!libreconfig(libre3,false))
@@ -275,6 +274,7 @@ static boolean postgetauth(boolean libre3) {
    String language=loc.getLanguage()+'-'+loc.getCountry();
    String culture=language;
    String setdevice="false";
+   
    while(true) {
       try {
       final String baseurl=getlibrebaseurl(libre3);
@@ -329,10 +329,10 @@ static boolean postgetauth(boolean libre3) {
          int status=object.getInt("status");
          if(status!=0) {
             String reason=object.getString("reason");
-            String poststatus="postgetauth: status="+status+" reason="+reason;
+            String poststatus="postgetauth: status="+status+" reason="+(reason==null?"null":reason);
             Log.e(LOG_ID,poststatus);
             if(status==20) {
-               if(reason.contains("wrongDeviceForUser")) {
+               if(setdevice.equals("false")&&(reason!=null&&reason.contains("wrongDeviceForUser"))) {
                   setdevice="true";
                   continue;   
                   }

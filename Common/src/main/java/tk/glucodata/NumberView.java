@@ -1249,8 +1249,7 @@ Layout getkeyboard(Context context,View anchor,int keyboardMode) {
                   lay.setY((int)((hei-h)*.65f));
               int rightEdge=wid-systembarRight;
               int mostright=rightEdge-w;
-              boolean noRoom=numberEditor?noroom:
-                      searchEditor&&anchor!=null&&anchor.getMeasuredWidth()>=(rightEdge-systembarLeft)/2;
+              boolean noRoom=numberEditor?noroom:searchEditor&&anchor!=null&&anchor.getMeasuredWidth()>=(rightEdge-systembarLeft)/2;
                 if(noRoom) {
                     if(numberEditor)
                         landscapeNumberShift=0;
@@ -1259,10 +1258,19 @@ Layout getkeyboard(Context context,View anchor,int keyboardMode) {
                     lay.setX(mostright);
                     }
                 else {
-                    int half=numberEditor?systembarLeft+(rightEdge-systembarLeft)/2:rightEdge/2;
-                    int halfWidth=numberEditor?rightEdge-half:half;
-                    int bij=(halfWidth-w)/4;
+//                    int half=numberEditor?systembarLeft+(rightEdge-systembarLeft)/2:rightEdge/2;
+ //                   int halfWidth=numberEditor?rightEdge-half:half;
+//                    int bij=(halfWidth-w)/2;
+                    int half=systembarLeft+(rightEdge-systembarLeft)/2;
+                    int halfWidth=rightEdge-half;
+                    int bij=(int)((halfWidth-w)*.8f);
                     int xpos=Math.min(mostright,half+bij);
+                    int rightGap=Math.max(0,mostright-xpos);
+                    landscapeNumberShift=rightGap/4;
+                    xpos+=rightGap/2;
+                    if(anchor!=null&&anchor.getMeasuredWidth()>0)
+                        anchor.setX(numberLandscapeX(rightEdge,anchor.getMeasuredWidth()));
+                       /* 
                     if(numberEditor) {
                         int rightGap=Math.max(0,mostright-xpos);
                         landscapeNumberShift=rightGap/4;
@@ -1270,22 +1278,24 @@ Layout getkeyboard(Context context,View anchor,int keyboardMode) {
                         if(anchor!=null&&anchor.getMeasuredWidth()>0)
                             anchor.setX(numberLandscapeX(rightEdge,anchor.getMeasuredWidth()));
                         }
-                    else if(searchEditor) {
-                        int rightGap=Math.max(0,mostright-xpos);
-                        landscapeSearchShift=rightGap/4;
-                        if(anchor!=null&&anchor.getMeasuredWidth()>0)
-                            anchor.setX(searchLandscapeX(wid,anchor.getMeasuredWidth()));
-                        }
-                    if(!numberEditor) {
+                    else {
+                        if(searchEditor) {
+                            int rightGap=Math.max(0,mostright-xpos);
+                            landscapeSearchShift=rightGap/4;
+                            if(anchor!=null&&anchor.getMeasuredWidth()>0)
+                                anchor.setX(searchLandscapeX(wid,anchor.getMeasuredWidth()));
+                            }
                         int rightHalf=systembarLeft+(rightEdge-systembarLeft)/2;
                         int centered=rightHalf+(rightEdge-rightHalf-w)/2;
                         xpos=Math.min(mostright,centered);
                         }
+                        */
+                    Log.i(LOG_ID,"Keyboard xpos="+xpos+" mostright="+mostright+" landscapeNumberShift="+landscapeNumberShift+" bij="+bij +"  numberEditor="+numberEditor+" searchEditor="+searchEditor);
                     lay.setX(xpos);
 
                 }
 
-        //        lay.setX(wid-w);
+
                 }
             else {
                 int ypos;

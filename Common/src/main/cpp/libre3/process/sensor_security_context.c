@@ -167,6 +167,13 @@ int l3_sensor_security_export_saved_authorization_into(l3_sensor_security_contex
     return l3_app_core_export_saved_authorization_into(&context->core, out149);
 }
 
+int l3_sensor_security_export_challenge_context_into(l3_sensor_security_context *context,
+                                    uint8_t out176[L3_LEN_CHALLENGE_CONTEXT]) {
+    int rc = context_ready(context);
+    if (rc != L3_SENSOR_SECURITY_OK) return rc;
+    return l3_app_core_export_challenge_context_into(&context->core, out176);
+}
+
 int l3_sensor_security_debug_copy_authorization_root(
     const l3_sensor_security_context *context,
     uint32_t meta4[4],

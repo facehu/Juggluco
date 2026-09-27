@@ -499,8 +499,101 @@
     <string name="transport_bluetooth">Directe Bluetooth</string>
     <string name="transport_messages">Messages</string>
     <string name="transport_needs_label">Label noodzakelijk bij directe Bluetooth en messages</string>
-
 <string name="transport_needs_password">Watchwoord noodzakelijk bij directe Bluetooth</string>
 
+<string name="use_for_numbers">Nummers</string>
+<string name="garmin_watch_app_id">Garmin Watch app ID:</string>
+<string name="garmin_id_length">De ID moet 32 tekens lang zijn (nu %1$d)</string>
+<string name="garmin_id_change_failed">Het wijzigen van de ID is mislukt</string>
+<string name="garmin_select_device">Selecteer eerst een Garmin-apparaat</string>
+<string name="garmin_already_numbers_device">%1$s is al het nummers-apparaat</string>
+<string name="garmin_change_numbers_title">Nummers-apparaat wijzigen?</string>
+<string name="garmin_change_numbers_message">Het Nummers-apparaat wijzigen van %1$s naar %2$s?\n\nDit kan een grote synchronisatie van opgeslagen nummers veroorzaken. Nummerwijzigingen op het vorige apparaat worden niet langer geïmporteerd.</string>
+<string name="garmin_change">Wijziging</string>
+<string name="garmin_no_device">Geen Garmin-apparaat</string>
+<string name="garmin_none">Geen</string>
+<string name="garmin_device_row">%1$s - %2$s</string>
+<string name="garmin_connection_status">%1$s</string>
+<string name="garmin_kerfstok_status">Kerfstok: %1$s</string>
+<string name="garmin_last_confirmed_reply">Laatst bevestigde antwoord: %1$s</string>
+<string name="garmin_glucose_confirmed">Glucose bevestigd: %1$s</string>
+<string name="garmin_glucose_sample">Glucosemonster: %1$s</string>
+<string name="garmin_glucose_ack">Glucose ACK: %1$s</string>
+<string name="garmin_ack_timestamped">Tijdstempel</string>
+<string name="garmin_ack_legacy">Oude versie</string>
+<string name="garmin_last_sent">Laatst verzonden: %1$s</string>
+<string name="garmin_last_received">Laatst ontvangen: %1$s</string>
+<string name="garmin_transport_result">Transportresultaat: %1$s</string>
+<string name="garmin_last_error">Laatste fout: %1$s</string>
+<string name="garmin_status_unknown">Onbekende communicatiestatus</string>
+<string name="garmin_status_closed">Kerfstok gesloten</string>
+<string name="garmin_status_recovering">Communicatie herstellen</string>
+<string name="garmin_status_error">Communicatiefout</string>
+<string name="garmin_status_connecting">Verbinden</string>
+<string name="garmin_status_waiting_start">Wachten op Kerfstok START</string>
+<string name="garmin_status_not_ready">Verbonden; Kerfstok nog niet gereed</string>
+<string name="garmin_status_waiting_glucose">Wachten op glucosebevestiging</string>
+<string name="garmin_status_waiting_history">Wachten op bevestiging van de geschiedenis</string>
+<string name="garmin_status_confirmed">Tweewegcommunicatie bevestigd</string>
+<string name="garmin_status_receiving">Ontvangst; antwoorden nog niet bevestigd</string>
+<string name="garmin_status_sending">Verzenden; antwoorden nog niet bevestigd</string>
+<string name="garmin_status_unconfirmed">Verbonden; Communicatie nog niet bevestigd</string>
+<string name="garmin_transfer_failed">Overdracht mislukt</string>
+<string name="garmin_invalid_device">Ongeldig apparaat</string>
+<string name="garmin_invalid_format">Ongeldig berichtformaat</string>
+<string name="garmin_message_too_large">Bericht te groot</string>
+<string name="garmin_unsupported_type">Niet-ondersteund berichttype</string>
+<string name="garmin_unknown_failure">Onbekende fout</string>
+<string name="garmin_no_start_ack">Geen Kerfstok START-bevestiging</string>
+<string name="garmin_no_glucose_ack">Geen glucosebevestiging</string>
+
+<string name="garmin_libre3_no_active_sensor">Geen actieve Libre 3-sensor</string>
+<string name="garmin_libre3_multiple_sensors">Er is meer dan één Libre 3-sensor actief</string>
+<string name="garmin_libre3_not_authorized">Libre 3 is nog niet volledig geautoriseerd</string>
+<string name="garmin_libre3_find_failed">Kan de actieve Libre 3-sensor niet vinden</string>
+
+<string name="garmin_libre3_backfill_send_failed">Kan Libre 3-backfillgegevens niet naar Garmin verzenden</string>
+
+<string name="delay_can_t_be_negative">"Uitstel kan niet negatief zijn: "</string>
+<string name="too_large_maximum_4095">" te groot, maximum=4095, "</string>
+<string name="garmin_alarm_alert">Alert</string>
+<string name="garmin_alarm_sound_update">Update Kerfstok op dit horloge om alarmgeluiden te gebruiken. Trilinstellingen kunnen nog steeds worden opgeslagen.</string>
+<string name="garmin_alarm_sound_unavailable">Dit horloge ondersteunt geen alarmgeluiden.</string>
+<string name="garmin_alarm_sound_supported">Geluid kan onafhankelijk van trilling worden ingeschakeld.</string>
+<string name="garmin_alarm_sound_unknown">Open Libre3 Kerfstok op het verbonden horloge om de geluidsondersteuning te controleren.  Geluidsinstellingen kunnen nu worden opgeslagen.</string>
+<string name="garmin_alarm_tone">Toon</string>
+<string name="garmin_alarm_outputs_update">Update Kerfstok op dit horloge voor onafhankelijke trillingsinstellingen en alarmen bij elke nieuwe glucosewaarde wanneer het aantal gedeactiveerde minuten op 0 staat.</string>
+<string name="garmin_alarm_vibration_unavailable">Dit horloge ondersteunt geen trillingen.</string>
+<string name="garmin_alarm_vibration_supported">Trillingen kunnen onafhankelijk van geluid worden ingeschakeld.</string>
+<string name="garmin_alarm_vibration_unknown">Open Libre3 Kerfstok op het verbonden horloge om te controleren of trillingen worden ondersteund. Instellingen kunnen nu worden opgeslagen.</string>
+
+<string-array name="garmin_alarm_tones">
+<item>Toets</item>
+<item>Start</item>
+<item>Stop</item>
+<item>Bericht</item>
+<item>Waarschuwing: hoog</item>
+<item>Waarschuwing: laag</item>
+<item>Luide piep</item>
+<item>Intervalwaarschuwing</item>
+<item>Alarm</item>
+<item>Reset</item>
+<item>Ronde</item>
+<item>Kanarie</item>
+<item>Tijdwaarschuwing</item>
+<item>Afstandswaarschuwing</item>
+<item>Mislukt</item>
+<item>Gelukt</item>
+<item>Voeding</item>
+<item>Batterij bijna leeg</item>
+<item>Fout</item>
+</string-array>
+<string name="garmin_alarm_vibration">Trilling</string>
+<string name="garmin_alarm_saved">Opgeslagen op horloge</string>
+<string name="garmin_alarm_waiting">Opgeslagen op telefoon; wacht op horloge</string>
+<string name="garmin_alarm_open">Open de bijgewerkte Libre3 Kerfstok-app om deze instellingen toe te passen.</string>
+<string name="garmin_alarm_save_failed">Kon alarminstellingen niet opslaan. Probeer het opnieuw.</string>
+<string name="garmin_alarm_invalid">Controleer de waarden: de lage waarde moet lager zijn dan de hoge waarde; vertraging bij ontbrekende waarde 1–4095 minuten, herhaling 0–4095 minuten, duur 0–65535 seconden.</string>
+<string name="garmin_alarm_newer">Het horloge bevat nieuwere alarminstellingen. Als je deze hier opslaat, worden ze overschreven.</string>
 </resources>
 

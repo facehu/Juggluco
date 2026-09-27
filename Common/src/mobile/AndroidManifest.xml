@@ -42,6 +42,7 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
 
     <application
         android:name=".Applic"
@@ -78,6 +79,13 @@
             </intent-filter>
 
         </activity>
+<activity
+    android:name="tk.glucodata.MyCaptureActivity"
+    android:exported="false"
+    android:screenOrientation="sensor"
+    android:stateNotNeeded="true"
+    android:theme="@style/zxing_CaptureTheme" />
+
   <activity-alias
       android:name="ViewPermissionUsageActivity"
       android:exported="true"

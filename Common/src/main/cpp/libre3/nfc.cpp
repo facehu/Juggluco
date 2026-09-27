@@ -31,6 +31,8 @@
 #include "sensoren.hpp"
 #include "SensorGlucoseData.hpp"
 #include "hexstr.hpp"
+#include "jniclass.hpp"
+
 //00A500010001000000C04E1E0D0101040C043036385A4D524631382F97
 //00A500010001000000C04E1E0D0101040C013036385A4D52463138164A
 extern Sensoren *sensors;
@@ -203,15 +205,22 @@ extern					void setusedsensors() ;
 		}
 	}
 //char scannedsensorname[10]{};
-extern "C" JNIEXPORT jlong JNICALL fromjava(interpret3NFC2)(JNIEnv *env, jclass thiz, jbyteArray  nfc1ar,jbyteArray jnfcout,jlong now) {
+extern "C" JNIEXPORT jstring JNICALL fromjava(interpret3NFC2)(JNIEnv *env, jclass thiz, jbyteArray  nfc1ar,jbyteArray jnfcout,jlong now,jlongArray jlongreturn) {
 	nfc1 first(env,nfc1ar);
+
+
 	if(first.error) {
         LOGAR("interpret3NFC2 error");
-		return 0LL;
+        CritArSave<jlong> longreturn(env,jlongreturn);
+        longreturn.data()[0]= 0LL; 
+        return nullptr;
 		}
+    jstring strreturn=env->NewStringUTF(first.nfcptr->serialnumber);
 	if(!jnfcout)  {
 		LOGSTRING("interpret3NFC2(null)\n");
-		return 0LL;
+        
+        CritArSave<jlong> longreturn(env,jlongreturn);
+		longreturn.data()[0]= 0LL; return strreturn;
 		}
         jsize lens=env->GetArrayLength(jnfcout);
 	jbyte nfcout[lens];
@@ -233,21 +242,36 @@ extern "C" JNIEXPORT jlong JNICALL fromjava(interpret3NFC2)(JNIEnv *env, jclass 
 			if(nfc->recogn==error) {
 		//		memcpy(scannedsensorname,first.nfc.serialnumber,9);
 				LOGGER("NFC: error %x\n",nfc->error);
-				if(nfc->error==0xb1)
-					return 1LL;
+				if(nfc->error==0xb1) {
+//s/return\(.*\)$/{longreturn.data()[0]=\1 return strreturn;}
+
+                    CritArSave<jlong> longreturn(env,jlongreturn);
+					longreturn.data()[0]= 1LL; 
+                    return strreturn;
+                    }
 				else  {
 					switch(first.nfcptr->state) {
-						case 8: finishsensor(first);return 5LL;
-						case 6: finishsensor(first);return 6LL;
-						default: return 3LL;
+						case 8: {finishsensor(first);
+                                CritArSave<jlong> longreturn(env,jlongreturn);
+                                longreturn.data()[0]= 5LL; 
+                                return strreturn;};
+						case 6: {finishsensor(first);
+                            CritArSave<jlong> longreturn(env,jlongreturn);
+                            longreturn.data()[0]= 6LL; 
+                            return strreturn;}
+						default: {
+                            CritArSave<jlong> longreturn(env,jlongreturn);
+                            longreturn.data()[0]= 3LL; return strreturn;}
 						}
 					}
 				}
 			LOGGER("NFC: error regn %hd instead of %hd\n",nfc->recogn,error);
-			return 0LL;	
+            CritArSave<jlong> longreturn(env,jlongreturn);
+			longreturn.data()[0]= 0LL;	 return strreturn;
 			}
 		LOGGER("NFC: sizeof bytearray=%d sizeof(nfc2)=%ld\n",lens,sizeof(nfc2));
-		return 0LL;
+        CritArSave<jlong> longreturn(env,jlongreturn);
+		longreturn.data()[0]= 0LL; return strreturn;
 		}
 
 	const nfc2 *nfc=reinterpret_cast<const nfc2*>(nfcout);
@@ -268,7 +292,9 @@ extern "C" JNIEXPORT jlong JNICALL fromjava(interpret3NFC2)(JNIEnv *env, jclass 
 	SensorGlucoseData *sens=sensors->getSensorData(sensindex);
 	sendstreaming(sens); 
 	libre3stream *streamd=new libre3stream(sensindex,sens);
-	return reinterpret_cast<jlong>(streamd);
+    CritArSave<jlong> longreturn(env,jlongreturn);
+	longreturn.data()[0]= reinterpret_cast<jlong>(streamd); 
+    return strreturn;
 	}
 
 

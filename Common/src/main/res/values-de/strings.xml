@@ -1,19 +1,14 @@
 <resources>
     <string name="language">de</string>
     <string name="languagename">Sprache</string>
-
      <string name="app_name">Juggluco</string>
      <string name="ok">OK</string>
      <string name="cancel">Abbrechen</string>
-
      <string name="garmin_initialization_error">"Init Garmin Connect SDK fehlgeschlagen: "</string>
-
      <string name="error_nfc_device_not_supported">Scannen unmöglich, kein NFC auf diesem Gerät</string>
      <string name="error_nfc_disabled">NFC ist deaktiviert, du kannst es in den Geräteeinstellungen aktivieren.</string>
-
     <string name="kerfstok_missing_title">Kerfstok ist nicht auf der Uhr installiert</string>
      <string name="kerfstok_missing_message">Kerfstok ist nicht auf der Uhr installiert. Im Garmin Connectiq Store ist es erhältlich</string>
-
 
      <string name="alarm_description">Glukose zu niedrig oder zu hoch</string>
      <string name="loss_description">Juggluco hat den Kontakt zum Sensor verloren</string>
@@ -220,12 +215,11 @@
 <string name="overlaypermission">Erlaubnis erteilen:</string>
   <string name="deletereminder">Erinnerung löschen?</string>
   <string name="deletelabel">Label löschen?</string>
-
  <string name="finish">Beenden</string>
  <string name="finishsensormessage">Diesen Sensor nicht mehr zum Streamen verwenden?</string>
 <string name="email">E-Mail:</string>
   <string name="getaccountid">Konto-ID erhalten</string>
- 
+
   <string name="emailaddresstooshort">E-Mail-Adresse zu kurz </string>
   <string name="emailaddresstoolong">E-Mail-Adresse zu lang </string>
   <string name="password8">Passwort sollte mindestens 8 Zeichen lang sein </string>
@@ -234,25 +228,20 @@
   <string name="manual">Manuell</string>
 <string name="noaccountidspecified">Keine Konto-ID angegeben </string>
 <string name="wrongformat">Falsches Format </string>
-
 <string name="noapplisteningto">"Keine App hört "</string>
-
 <string name="secret">api_secret</string>
 <string name="withoutsaving">Verlassen ohne zu speichern?</string>
 <string name="active">Aktiv</string>
 <string name="usessl">SSL verwenden</string>
 <string name="fullchain">Full chain</string>
-
          <string name="privatekey">Privater Schlüssel</string>
 <string name="localonly">Nur lokal</string>
 <string name="toolongsecret">: api_secret zu lang. max=</string>
 <string name="invalidport">" ungültige Portnummer"</string>
 <string name="newsecret">"neues api_secret: "</string>
 <string name="newport">"neuer port="</string>
-
 <string name="webserver">Webserver</string>
 <string name="treatments">Mengen geben</string>
-
 <string name="wentwrong">Etwas ist schief gelaufen</string>
      <string name="dosis">" Dosis "</string>
      <string name="doses">" Dosen "</string>
@@ -273,7 +262,6 @@
   <string name="talker">Sprecher</string>
   <string name="secondsbetween">Sekunden dazwischen</string>
   <string name="test">Test</string>
-
  <string name="novalue">Kein Wert</string>
  <string name="menus">Menü</string>
 <string name="system_ui">System UI</string>
@@ -297,7 +285,6 @@
  <string name="speakmessages">Mitteilungen sprechen</string>
   <string name="speakalarms">Alarme sprechen</string>
   <string name="speakglucose">Glukose sprechen</string>
-
 <string name="notfound">Nicht gefunden</string>
   <string name="no_ringtone_picker_found">Keine Ringtone picker gefunden</string>
   <string name="can_t_play">"Kann nicht abgespielt werden "</string>
@@ -328,7 +315,6 @@
  <string name="floatjuggluco">Über</string>
  <string name="threshold">Schwelle</string>
  <string name="untouchablequestion">Schwebende Glukose untastbar machen?</string>
-
 <string name="hour12">12h</string>
 <string name="complications">Komplikationen</string>
 <string name="colors_style_setting_description">Zifferblattfarbe</string>
@@ -337,37 +323,29 @@
 <string name="glucosearrowvaluecomplicationlabel">Wert + Pfeil</string>
 <string name="text">Text</string>
 <string name="arrow">Pfeil</string>
-
    <string name="notalldata">ACHTUNG: „Empfangen von“ nicht eingestellt, ohne alle Daten zu senden.</string>
-
 <string name="libresetalllabels">Das Häkchen bei „Mengen senden“ können Sie erst setzen, nachdem Sie bei jedem Etikett angegeben haben, was damit geschehen soll.</string>
    <string name="photo">Foto</string>
 <string name="photomessage">Scannen Sie die Datenmatrix eines Dexcom G7/ONE+ oder Sibionics GS1 Sensors oder den Klon-QR-Code</string>
    <string name="exchanges">Daten austauschen</string>
-
-   <string name="initializing">Initialisierung</string> 
+   <string name="initializing">Initialisierung</string>
    <string name="startjuggluco">Juggluco läuft auf dem Telefon?\n\nWLAN und Bluetooth aktiviert?</string>
-   <string name="connected">Verbunden!</string> 
-   <string name="useclose">Schließknopf</string> 
-   <string name="filesize">Dateigröße</string> 
-   <string name="logging">Protokollieren</string> 
+   <string name="connected">Verbunden!</string>
+   <string name="useclose">Schließknopf</string>
+   <string name="filesize">Dateigröße</string>
+   <string name="logging">Protokollieren</string>
     <string name="not">Nicht</string>
     <string name="datapresent">"Daten vorhanden: "</string>
 <string name="overwrite">Überschreiben?</string>
 <string name="usedweight">WARNUNG: Gewicht (%.1f) größer als 0</string>
-
 <string name="verylowglucose">" Sehr niedrige Glukose!"</string>
 <string name="veryhighglucose">" Sehr hohe Glukose!"</string>
-
  <string name="verylowglucoseshort">" Sehr niedrig!"</string>
  <string name="veryhighglucoseshort">" Sehr hoch!"</string>
-
 <string name="prelowglucose">" Bald niedrige Glukose!"</string>
 <string name="prehighglucose">" Bald hohe Glukose!"</string>
-
 <string name="verylowglucosealarm">Alarm für sehr niedrigen Glukosewert</string>
 <string name="veryhighglucosealarm">Alarm für sehr hohen Glukosewert</string>
-
 <string name="prelowglucosealarm">Alarm, wenn bald unter</string>
 <string name="prehighglucosealarm">Alarm, wenn bald über</string>
 <string name="schedules">Zeitpläne</string>
@@ -428,50 +406,29 @@
 <string name="timedout">Zeitüberschreitung</string>
 <string name="unpairing">"Entkopplung "</string>
 <string name="unpairingwatch">Entkopplung der Uhr "</string>
-
 <string name="failed">fehlgeschlagen</string>
-
 <string name="successful">erfolgreich</string>
     <string name="use">Aktivieren</string>
 <string name="connecttosensor">Verbindung zum Sensor wird hergestellt…</string>
-
 <string name="clear">Löschen</string>
-
 <string name="clearingmemory">Sensorspeicher wird gelöscht</string>
-
 <string name="clearmessage">Sensor neu starten? Sensorspeicher löschen?</string>
-
 <string name="clearing">Löschen"</string>
-
 <string name="clearsuccess">Löschen erfolgreich"</string>
-
 <string name="clearfailed">Löschen fehlgeschlagen"</string>
-
 <string name="sensors">Sensoren</string>
-
 <string name="titlewebserverneed">Webserver benötigt</string>
-
 <string name="messagewebserverneed">Gehen Sie im linken Menü zu Einstellungen → Daten austauschen → Webserver, um den Webserver zu aktivieren</string>
-
 <string name="nostreamvalues">Keine Stream-werte</string>
-
 <string name="nohistoryvalues">Keine History-werte</string>
 <string name="jugglucoupdate">Aktualisierungszeit</string>
-
 <string name="retrieve">Vom Server abrufen</string>
-
 <string name="wrongcode">Falscher QR-Code</string>
-
 <string name="leave">schließen?</string>
-
 <string name="id0message">Die ID muss ungleich 0 sein</string>
-
 <string name="emailnotused">E-Mail-Passwort-Kombination nicht verwendet und wird nicht gespeichert.</string>
-
 <string name="connecttoserver">Verbindung zum Server wird hergestellt…</string>
-
 <string name="retrievefailed">Abruf der Konto-ID fehlgeschlagen</string>
-
 <string name="themesname">Designs:</string>
 <string name="buttonshape">Buttonform</string>
 <string name="radius">"Radius: "</string>
@@ -481,7 +438,6 @@
 <string name="dark">Dunkel</string>
 <string name="apply">Anwenden</string>
 <string name="theme">Design</string>
-
     <string name="webuploadpages">Webseiten hochladen</string>
     <string name="webuploadfiles">Dateien hochladen</string>
     <string name="webuploaddirectory">Verzeichnis hochladen</string>
@@ -501,10 +457,8 @@
     <string name="webdeletefailed">%1$s konnte nicht gelöscht werden</string>
     <string name="webdirectoryempty">Dieses Verzeichnis ist leer</string>
     <string name="webdirectoryentry">[Verzeichnis] %1$s</string>
-
 <string name="autorotate">Automa. drehen</string>
 <string name="rotateText">Text drehen</string>
-
 
     <string name="mirror_transport">Verbindungsmethode:</string>
     <string name="transport_automatic">Automatisch</string>
@@ -512,8 +466,99 @@
     <string name="transport_bluetooth">Direkte Bluetooth</string>
     <string name="transport_messages">Messages</string>
 <string name="transport_needs_label">Direktes Bluetooth und Messages benötigen ein Etikett</string>
-
 <string name="transport_needs_password">Direktes Bluetooth benötigt ein passwort</string>
-</resources>
+<string name="use_for_numbers">Zahlen</string>
+<string name="garmin_watch_app_id">Garmin Watch App-ID:</string>
+<string name="garmin_app_id_button" translatable="false">ID</string>
+<string name="garmin_id_length">Die ID sollte 32 Zeichen lang sein (aktuell %1$d)</string>
+<string name="garmin_id_change_failed">Änderung der ID fehlgeschlagen</string>
+<string name="garmin_select_device">Wählen Sie zuerst ein Garmin-Gerät aus</string>
+<string name="garmin_already_numbers_device">%1$s ist bereits das Zahlen-Gerät</string>
+<string name="garmin_change_numbers_title">Zahlen-Gerät ändern?</string>
+<string name="garmin_change_numbers_message">Zahlen-Gerät von %1$s auf %2$s ändern?\n\nDies kann eine umfangreiche Synchronisierung gespeicherter Nummern verursachen. Änderungen der Zahlen des vorherigen Geräts werden nicht mehr importiert.</string>
+<string name="garmin_change">Änderung</string>
+<string name="garmin_no_device">Kein Garmin-Gerät</string>
+<string name="garmin_none">Keine</string>
+<string name="garmin_device_row">%1$s - %2$s</string>
+<string name="garmin_connection_status">%1$s</string>
+<string name="garmin_kerfstok_status">Kerfstok: %1$s</string>
+<string name="garmin_last_confirmed_reply">Letzte Bestätigung Antwort: %1$s</string>
+<string name="garmin_glucose_confirmed">Glukose bestätigt: %1$s</string>
+<string name="garmin_glucose_sample">Glukoseprobe: %1$s</string>
+<string name="garmin_glucose_ack">Glukose-Bestätigung: %1$s</string>
+<string name="garmin_ack_timestamped">Zeitstempel</string>
+<string name="garmin_ack_legacy">Legacy</string>
+<string name="garmin_last_sent">Zuletzt gesendet: %1$s</string>
+<string name="garmin_last_received">Zuletzt empfangen: %1$s</string>
+<string name="garmin_transport_result">Transportergebnis: %1$s</string>
+<string name="garmin_last_error">Letzter Fehler: %1$s</string>
+<string name="garmin_status_unknown">Unbekannter Kommunikationsstatus</string>
+<string name="garmin_status_closed">Kerfstok geschlossen</string>
+<string name="garmin_status_recovering">Verbindung wird wiederhergestellt</string>
+<string name="garmin_status_error">Kommunikationsfehler</string>
+<string name="garmin_status_connecting">Verbindung wird hergestellt</string>
+<string name="garmin_status_waiting_start">Warte auf Kerfstok START</string>
+<string name="garmin_status_not_ready">Verbunden; Kerfstok noch nicht bereit</string>
+<string name="garmin_status_waiting_glucose">Warte auf Glukosebestätigung</string>
+<string name="garmin_status_waiting_history">Warte auf Verlaufsbestätigung</string>
+<string name="garmin_status_confirmed">Bidirektionale Kommunikation bestätigt</string>
+<string name="garmin_status_receiving">Empfang; Antworten noch nicht bestätigt</string>
+<string name="garmin_status_sending">Wird gesendet; Antworten noch nicht bestätigt</string>
+<string name="garmin_status_unconfirmed">Verbunden; Kommunikation noch nicht bestätigt</string>
+<string name="garmin_transfer_failed">Übertragung fehlgeschlagen</string>
+<string name="garmin_invalid_device">Ungültiges Gerät</string>
+<string name="garmin_invalid_format">Ungültiges Nachrichtenformat</string>
+<string name="garmin_message_too_large">Nachricht zu groß</string>
+<string name="garmin_unsupported_type">Nicht unterstützter Nachrichtentyp</string>
+<string name="garmin_unknown_failure">Unbekannter Fehler</string>
+<string name="garmin_no_start_ack">Keine Kerfstok-Startbestätigung</string>
+<string name="garmin_no_glucose_ack">Keine Glukosebestätigung</string>
+<string name="garmin_libre3_no_active_sensor">Kein aktiver Libre-3-Sensor</string>
+<string name="garmin_libre3_multiple_sensors">Mehr als ein Libre-3-Sensor ist aktiv</string>
+<string name="garmin_libre3_not_authorized">Libre 3 ist noch nicht vollständig autorisiert</string>
+<string name="garmin_libre3_find_failed">Aktiver Libre-3-Sensor nicht gefunden</string>
 
+<string name="garmin_libre3_backfill_send_failed">Libre-3-Backfill-Daten konnten nicht an Garmin gesendet werden</string>
+
+<string name="delay_can_t_be_negative">"Verzögerung darf nicht negativ sein: "</string>
+<string name="too_large_maximum_4095">" zu groß, Maximum=4095, "</string>
+<string name="garmin_alarm_alert">Alert</string>
+<string name="garmin_alarm_sound_update">Aktualisiere Kerfstok auf dieser Uhr, um Alarmtöne zu nutzen. Vibrationseinstellungen können weiterhin gespeichert werden.</string>
+<string name="garmin_alarm_sound_unavailable">Diese Uhr unterstützt keine Alarmtöne.</string>
+<string name="garmin_alarm_sound_supported">Ton kann unabhängig von der Vibration aktiviert werden.</string>
+<string name="garmin_alarm_sound_unknown">Öffne Libre3 Kerfstok auf der verbundenen Uhr, um die Tonunterstützung zu überprüfen. Die Toneinstellungen können jetzt gespeichert werden.</string>
+<string name="garmin_alarm_tone">Ton</string>
+<string name="garmin_alarm_outputs_update">Aktualisiere Kerfstok auf dieser Uhr, um unabhängige Vibrationseinstellungen und Alarme bei jedem neuen Glukosewert zu erhalten, wenn die Deaktivierungszeit auf 0 gesetzt ist.</string>
+<string name="garmin_alarm_vibration_unavailable">Diese Uhr unterstützt keine Vibration.</string>
+<string name="garmin_alarm_vibration_supported">Vibration kann unabhängig vom Ton aktiviert werden.</string>
+<string name="garmin_alarm_vibration_unknown">Öffne Libre3 Kerfstok auf der verbundenen Uhr, um die Vibrationsunterstützung zu prüfen. Die Einstellungen können jetzt gespeichert werden.</string>
+<string-array name="garmin_alarm_tones">
+<item>Taste</item>
+<item>Start</item>
+<item>Stopp</item>
+<item>Nachricht</item>
+<item>Alarm: Hoch</item>
+<item>Alarm: Niedrig</item>
+<item>Lauter Piepton</item>
+<item>Intervall-Alarm</item>
+<item>Alarm</item>
+<item>Zurücksetzen</item>
+<item>Runde</item>
+<item>Kanarienvogel</item>
+<item>Zeit-Alarm</item>
+<item>Distanz-Alarm</item>
+<item>Fehlschlag</item>
+<item>Erfolg</item>
+<item>Ein/Aus</item>
+<item>Batterie schwach</item>
+<item>Fehler</item>
+</string-array>
+<string name="garmin_alarm_vibration">Vibration</string>
+<string name="garmin_alarm_saved">Auf der Uhr gespeichert</string>
+<string name="garmin_alarm_waiting">Auf dem Smartphone gespeichert; wartet auf die Uhr</string>
+<string name="garmin_alarm_open">Öffnen Sie die aktualisierte Libre3-Kerfstok-App, um diese Einstellungen zu übernehmen.</string>
+<string name="garmin_alarm_save_failed">Alarmeinstellungen konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.</string>
+<string name="garmin_alarm_invalid">Überprüfen Sie die Werte: „Niedrig“ muss unter „Hoch“ liegen; Verzögerung bei fehlenden Werten 1–4095 Minuten, Wiederholung 0–4095 Minuten, Dauer 0–65535 Sekunden.</string>
+<string name="garmin_alarm_newer">Auf der Uhr befinden sich neuere Alarmeinstellungen. Durch das Speichern hier werden diese überschrieben.</string>
+</resources>
 

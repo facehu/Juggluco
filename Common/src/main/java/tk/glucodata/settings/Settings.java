@@ -63,6 +63,7 @@ import static tk.glucodata.util.getlabel;
 import static tk.glucodata.util.getlocale;
 import static tk.glucodata.util.getradiobuttonId;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
@@ -420,28 +421,37 @@ static private void advancedalarm(MainActivity context,View parview) {
      var nwmarg= (int)(tk.glucodata.GlucoseCurve.metrics.density*40.0);
      getMargins(close).setMarginEnd(nwmarg);
      getMargins(help).setMarginStart(nwmarg);
-     getMargins(verylowalarm[0]).topMargin=(int)(tk.glucodata.GlucoseCurve.metrics.density*8.0);
+ //    getMargins(verylowalarm[0]).topMargin=(int)(tk.glucodata.GlucoseCurve.metrics.density*8.0);
      help.setOnClickListener(v-> help(R.string.advancedAlarmshelp,context));
-        Layout lay = new Layout(context, (l, w, h) -> {
-//             final var width= GlucoseCurve.getwidth();
-  //           var nwmarg= (int)(width*.15);
+     Layout lay = new Layout(context, (l, w, h) -> {
             int[] ret={w,h};
             return ret;
 
             },verylowalarm,veryhighalarm,prelowalarm,prehighalarm,new View[]{help,schedules,close})
-            .portraitLayout(
-                new View[]{verylowalarm[0]},new View[]{verylowalarm[1],verylowalarm[2]},
+            .portraitLayout( new View[]{verylowalarm[0]},new View[]{verylowalarm[1],verylowalarm[2]},
                 new View[]{veryhighalarm[0]},new View[]{veryhighalarm[1],veryhighalarm[2]},
                 new View[]{prelowalarm[0]},new View[]{prelowalarm[1],prelowalarm[2]},
                 new View[]{prehighalarm[0]},new View[]{prehighalarm[1],prehighalarm[2]},
-                new View[]{schedules},new View[]{help,close});
-        layout=lay;
-    final int sidepad=(int)(GlucoseCurve.metrics.density*8);
-    lay.systembarPadding((left,top,right,bottom)-> {
-          return   new int[]{left+sidepad,top*2/3,sidepad+right,sidepad+bottom*9/10};
+                new View[]{schedules},new View[]{help,close}
 
-            });
+                );
+        /*    final int sidepad=(int)(GlucoseCurve.metrics.density*8);
+            lay.systembarPadding((left,top,right,bottom)-> {
+                  return   new int[]{left+sidepad,top,sidepad+right,bottom}; */
+        
+
+        final int sidepad=(int)(GlucoseCurve.metrics.density*8);
+       getMargins(close).bottomMargin=getMargins(close).bottomMargin=sidepad;
+        lay.systembarPadding((left,top,right,bottom)-> {
+              return   new int[]{left+sidepad,top,sidepad+right,bottom*9/10};
+              });
+       layout=lay;
         }
+
+
+
+
+
 
 
     schedules.setOnClickListener(v->scheduleProfiles(context,layout));
@@ -1678,6 +1688,10 @@ static private void exchanges(MainActivity context, View parent) {
    final var density=tk.glucodata.GlucoseCurve.metrics.density;
         lay.setPadding((int)(density*8.0),(int)(density*25.0),(int)(density*8.0),(int)(density*2.0));
     } else {
+    /*
+        var nfcemu=getbutton(context,"NFC emu");
+        nfcemu.setOnClickListener(v -> tk.glucodata.Libre3NfcEmulator.starttestemu());
+        */
         var uploader = getbutton(context, R.string.uploader);
         uploader.setOnClickListener(v -> tk.glucodata.NightPost.config(context, thelayout[0]));
         final CheckDirectionBox librelinkbroadcast = new CheckDirectionBox(context);

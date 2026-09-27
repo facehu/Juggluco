@@ -535,9 +535,109 @@
     <string name="mirror_transport">Connection method:</string>
     <string name="transport_automatic">Automatic</string>
     <string name="transport_tcp">TCP/IP</string>
-    <string name="transport_bluetooth">Direct Bluetooth</string>
+    <string name="transport_bluetooth">Direct BLE</string>
     <string name="transport_messages">Messages</string>
     <string name="transport_needs_label">Direct Bluetooth and Messages need a connection label</string>
     <string name="transport_needs_password">Direct Bluetooth needs a mirror password</string>
+     <string name="via_garmin">Garmin Connect</string>
+     <string name="use_for_numbers">Numbers</string>
+
+    <!-- Garmin status: placeholders hold device names, timestamps or status text. -->
+    <string name="garmin_watch_app_id">Garmin Watch app ID:</string>
+    <string name="garmin_app_id_button" translatable="false">ID</string>
+    <string name="garmin_id_length">ID should be 32 characters long (now %1$d)</string>
+    <string name="garmin_id_change_failed">Changing ID failed</string>
+    <string name="garmin_select_device">Select a Garmin device first</string>
+    <string name="garmin_already_numbers_device">%1$s is already the numbers device</string>
+    <string name="garmin_change_numbers_title">Change numbers device?</string>
+    <string name="garmin_change_numbers_message">Change the numbers device from %1$s to %2$s?\n\nThis can cause a large synchronization of stored numbers. The previous device can no longer be used to enter numbers.</string>
+    <string name="garmin_change">Change</string>
+    <string name="garmin_no_device">No Garmin device</string>
+    <string name="garmin_connect" translatable="false">Garmin Connect</string>
+    <string name="garmin_none">None</string>
+
+    <string name="garmin_device_row">%1$s - %2$s</string>
+    <string name="garmin_connection_status">%1$s</string>
+    <string name="garmin_kerfstok_status">Kerfstok: %1$s</string>
+    <string name="garmin_last_confirmed_reply">Last confirmed reply: %1$s</string>
+    <string name="garmin_glucose_confirmed">Glucose confirmed: %1$s</string>
+    <string name="garmin_glucose_sample">Glucose sample: %1$s</string>
+    <string name="garmin_glucose_ack">Glucose ACK: %1$s</string>
+    <string name="garmin_ack_timestamped">Timestamped</string>
+    <string name="garmin_ack_legacy">Legacy</string>
+    <string name="garmin_last_sent">Last sent: %1$s</string>
+    <string name="garmin_last_received">Last received: %1$s</string>
+    <string name="garmin_transport_result">Transport result: %1$s</string>
+    <string name="garmin_last_error">Last error: %1$s</string>
+    <string name="garmin_status_unknown">Unknown communication state</string>
+    <string name="garmin_status_closed">Kerfstok closed</string>
+    <string name="garmin_status_recovering">Recovering communication</string>
+    <string name="garmin_status_error">Communication error</string>
+    <string name="garmin_status_connecting">Connecting</string>
+    <string name="garmin_status_waiting_start">Waiting for Kerfstok START</string>
+    <string name="garmin_status_not_ready">Connected; Kerfstok not yet ready</string>
+    <string name="garmin_status_waiting_glucose">Waiting for glucose acknowledgement</string>
+    <string name="garmin_status_waiting_history">Waiting for history acknowledgement</string>
+    <string name="garmin_status_confirmed">Two-way communication confirmed</string>
+    <string name="garmin_status_receiving">Receiving; replies not yet confirmed</string>
+    <string name="garmin_status_sending">Sending; replies not yet confirmed</string>
+    <string name="garmin_status_unconfirmed">Connected; communication not yet confirmed</string>
+    <string name="garmin_transfer_failed">Transfer failed</string>
+    <string name="garmin_invalid_device">Invalid device</string>
+    <string name="garmin_invalid_format">Invalid message format</string>
+    <string name="garmin_message_too_large">Message too large</string>
+    <string name="garmin_unsupported_type">Unsupported message type</string>
+    <string name="garmin_unknown_failure">Unknown failure</string>
+    <string name="garmin_no_start_ack">No Kerfstok START acknowledgement</string>
+    <string name="garmin_no_glucose_ack">No glucose acknowledgement</string>
+
+    <string name="garmin_libre3_no_active_sensor">No active Libre 3 sensor</string>
+    <string name="garmin_libre3_multiple_sensors">More than one Libre 3 sensor is active</string>
+    <string name="garmin_libre3_not_authorized">Libre 3 is not fully authorized yet</string>
+    <string name="garmin_libre3_find_failed">Can\'t find the active Libre 3 sensor</string>
+   
+    <string name="garmin_libre3_backfill_send_failed">Can\'t send Libre 3 backfill position to Garmin</string>
+
+ <string name="delay_can_t_be_negative">"Delay can't be negative: "</string>
+ <string name="too_large_maximum_4095">" too large, maximum=4095, "</string>
+    <string name="garmin_alarm_alert">Alert</string>
+    <string name="garmin_alarm_sound_update">Update Kerfstok on this watch to use alarm sounds. Vibration settings can still be saved.</string>
+    <string name="garmin_alarm_sound_unavailable">This watch does not support alarm tones.</string>
+    <string name="garmin_alarm_sound_supported">Sound can be enabled independently of vibration.</string>
+    <string name="garmin_alarm_sound_unknown">Open Libre3 Kerfstok on the connected watch to check sound support. Sound choices can be saved now.</string>
+    <string name="garmin_alarm_tone">Tone</string>
+    <string name="garmin_alarm_outputs_update">Update Kerfstok on this watch for independent vibration settings and alarms on each new glucose value when minutes deactivated is zero.</string>
+    <string name="garmin_alarm_vibration_unavailable">This watch does not support vibration.</string>
+    <string name="garmin_alarm_vibration_supported">Vibration can be enabled independently of sound.</string>
+    <string name="garmin_alarm_vibration_unknown">Open Libre3 Kerfstok on the connected watch to check vibration support. Choices can be saved now.</string>
+    <!-- Positions are Garmin Attention.TONE_* IDs (0 through 18), not display order. -->
+    <string-array name="garmin_alarm_tones">
+        <item>Key</item>
+        <item>Start</item>
+        <item>Stop</item>
+        <item>Message</item>
+        <item>High alert</item>
+        <item>Low alert</item>
+        <item>Loud beep</item>
+        <item>Interval alert</item>
+        <item>Alarm</item>
+        <item>Reset</item>
+        <item>Lap</item>
+        <item>Canary</item>
+        <item>Time alert</item>
+        <item>Distance alert</item>
+        <item>Failure</item>
+        <item>Success</item>
+        <item>Power</item>
+        <item>Low battery</item>
+        <item>Error</item>
+    </string-array>
+    <string name="garmin_alarm_vibration">Vibration</string>
+    <string name="garmin_alarm_saved">Saved on watch</string>
+    <string name="garmin_alarm_waiting">Saved on phone; waiting for watch</string>
+    <string name="garmin_alarm_open">Open the updated Libre3 Kerfstok app to apply these settings.</string>
+    <string name="garmin_alarm_save_failed">Could not save alarm settings. Please try again.</string>
+    <string name="garmin_alarm_invalid">Check the values: low must be below high; missing-value delay 1–4095 minutes, repeat 0–4095 minutes, duration 0–65535 seconds.</string>
+    <string name="garmin_alarm_newer">The watch has newer alarm settings. Saving here replaces them.</string>
 
 </resources>

@@ -182,7 +182,7 @@ static private  int askedNotify=5;
                    }
                 }
 boolean askNotify() {
-      askedNotify=0;
+      askedNotify=-1;
       if(Build.VERSION.SDK_INT >=33)  {
         var perm= Manifest.permission.POST_NOTIFICATIONS;
         if(ContextCompat.checkSelfPermission(this, perm)!= PackageManager.PERMISSION_GRANTED)  {

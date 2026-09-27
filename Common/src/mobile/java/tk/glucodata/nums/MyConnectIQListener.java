@@ -42,22 +42,31 @@ public class MyConnectIQListener implements ConnectIQ.ConnectIQListener {
     private  final String LOG_ID = "MyConnectIQListener";
 	String init_error="";
 	Context context;
+	private final AllData owner;
 	private boolean mSdkReady = false;
 	public boolean sdkready() {
 		return mSdkReady;
 		}
 	public MyConnectIQListener(Context context) {
+		this(context,null);
+		}
+	public MyConnectIQListener(Context context, AllData owner) {
 		this.context=context;
+		this.owner=owner;
 		}
 
         @Override
         public void onInitializeError(ConnectIQ.IQSdkErrorStatus errStatus) {
+
+            if(owner!=null && !owner.isCurrentGarminListener(this)) return;
 	
-	    setdata();
             init_error=tk.glucodata.R.string.garmin_initialization_error + errStatus.name();
             {if(doLog) {Log.v(LOG_ID, init_error);};};
 
             mSdkReady = false;
+            if(owner!=null && owner.onGarminConnectInitializationError(errStatus))
+                return;
+	    setdata();
             String message;
             switch(errStatus) {
                 case GCM_NOT_INSTALLED:
@@ -82,12 +91,17 @@ public class MyConnectIQListener implements ConnectIQ.ConnectIQListener {
             dialog.show().setCanceledOnTouchOutside(false);
         }
 	void setdata() {
+		if(owner!=null) {
+			if(owner.isCurrentGarminListener(this)) owner.loadDevices(context);
+			return;
+			}
 		tk.glucodata.Applic app=(tk.glucodata.Applic)context.getApplicationContext();
 		app.numdata.loadDevices(context); 
 //	    if(context instanceof DeviceActivity) ((DeviceActivity)context).usedev();
 	}
         @Override
         public void onSdkReady() {
+	     if(owner!=null && !owner.isCurrentGarminListener(this)) return;
 	     Natives.sethasgarmin(true);
             {if(doLog) {Log.v(LOG_ID, "ConnectIQ Ready");};};
 /*        	PackageManager manage = context.getPackageManager();
@@ -95,6 +109,7 @@ public class MyConnectIQListener implements ConnectIQ.ConnectIQListener {
 
  */
             mSdkReady = true;
+            if(owner!=null) owner.onGarminSdkReady(this);
 	    setdata();
         }
 
@@ -102,7 +117,10 @@ public class MyConnectIQListener implements ConnectIQ.ConnectIQListener {
         public void onSdkShutDown() {
             {if(doLog) {Log.v(LOG_ID, "ConnectIQ ShutDown");};};
             mSdkReady = false;
+            // Garmin Connect can be force-stopped/restarted without restarting
+            // Juggluco.  Tell the owner that this SDK instance died so it can
+            // reinitialize it when Garmin Connect becomes available again.
+            if(owner!=null) owner.onGarminSdkShutDown(this);
         }
 
     };
-

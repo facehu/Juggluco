@@ -40,12 +40,13 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             }
         int stepresult = 0;
         int badscan = 0;
+        public String sensorid;
 
         public void onDrawFrame(GL10 gl) {
             if(Applic.Nativesloaded)
                 curve.syncNativeDisplayRotation();
             if(badscan!=0) {
-                if((stepresult = Natives.badscan(badscan))!=STEPBACK)
+                if((stepresult = Natives.badscan(badscan,sensorid))!=STEPBACK)
                         badscan=0;
             } else
                 stepresult = Natives.step();

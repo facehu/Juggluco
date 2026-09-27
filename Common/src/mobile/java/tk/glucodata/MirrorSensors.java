@@ -69,6 +69,7 @@ private static void confirmFinish(MainActivity act,long ptr) {
          public void onClick(DialogInterface dialog, int id) {
                Log.i(LOG_ID,"confirmFinish");
                 Natives.finishfromSensorptr(ptr);
+                SensorBluetooth.sensorEnded(serial);
                 act.requestRender();
                 MainActivity.doonback();
                 bluediag.start(act);

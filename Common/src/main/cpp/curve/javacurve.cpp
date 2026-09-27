@@ -109,9 +109,22 @@ extern "C" JNIEXPORT jstring JNICALL   fromjava(getUsedSensorName)(JNIEnv *envin
  }
 
 
-extern int badscanMessage(NVGcontext* avg,int kind) ;
-extern "C" JNIEXPORT jint JNICALL fromjava(badscan)(JNIEnv* env, jclass obj,jint kind) {
- return ::appcurve.badscanMessage(::genVG, kind) ;
+extern "C" JNIEXPORT jint JNICALL fromjava(badscan)(JNIEnv* env, jclass obj,jint kind,jstring jsensorid) {
+
+ const char *sensorid; 
+ size_t len;
+ if(jsensorid) {
+    sensorid=env->GetStringUTFChars(jsensorid, NULL);
+    len= env->GetStringUTFLength(jsensorid);
+    }
+else {
+    sensorid=nullptr;
+    len=0;
+    }
+ int res= ::appcurve.badscanMessage(::genVG, kind,{sensorid,len}) ;
+ if(sensorid) 
+               env->ReleaseStringUTFChars(jsensorid, sensorid);
+ return res;
  }
 
 jobject glucosecurve=0;

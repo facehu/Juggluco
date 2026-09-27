@@ -614,6 +614,23 @@ int l3_app_core_decrypt_challenge_response_into(
                ? 1 : L3_SECURITY_ERR_ENGINE;
 }
 
+int l3_app_core_export_challenge_context_into(
+    const l3_app_core *core,
+    uint8_t out176[L3_LEN_CHALLENGE_CONTEXT]) {
+    if (!core || !out176) return L3_SECURITY_ERR_ARGUMENT;
+    if (!core_is_authorized(core)) return L3_SECURITY_ERR_STATE;
+
+    for (size_t i = 0; i < L3_CHALLENGE_BLOCK_CONTEXT_WORDS; ++i) {
+        const uint32_t word = core->session.authorized.challenge.words[i];
+        const size_t off = i * 4u;
+        out176[off + 0u] = (uint8_t)(word);
+        out176[off + 1u] = (uint8_t)(word >> 8);
+        out176[off + 2u] = (uint8_t)(word >> 16);
+        out176[off + 3u] = (uint8_t)(word >> 24);
+    }
+    return 1;
+}
+
 int l3_app_core_export_saved_authorization_into(
     const l3_app_core *core,
     uint8_t out149[L3_LEN_SAVED_AUTHORIZATION]) {

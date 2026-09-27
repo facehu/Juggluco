@@ -21,6 +21,7 @@
 
 package tk.glucodata;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.InputFilter;
@@ -34,27 +35,34 @@ import android.widget.Button;
 
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Space;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import static tk.glucodata.util.getradiobuttonId;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.garmin.android.connectiq.IQDevice;
+import com.garmin.android.connectiq.ConnectIQ.IQMessageStatus;
 
 import java.text.DateFormat;
 import java.util.Date;
 
 import tk.glucodata.nums.AllData;
-import tk.glucodata.nums.numio;
 import tk.glucodata.settings.Shortcuts;
+
+import android.text.method.ScrollingMovementMethod;
+
 
 import static android.text.InputType.TYPE_NULL;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static tk.glucodata.Log.doLog;
-import static tk.glucodata.Natives.getkerfstokblack;
-import static tk.glucodata.Natives.setkerfstokblack;
 import static tk.glucodata.NumberView.avoidSpinnerDropdownFocus;
 import static tk.glucodata.RingTones.EnableControls;
 import static tk.glucodata.help.help;
@@ -65,6 +73,7 @@ import static tk.glucodata.util.getbutton;
 import static tk.glucodata.util.getcheckbox;
 import static tk.glucodata.util.getlabel;
 import static tk.glucodata.util.timestring;
+import static tk.glucodata.Applic.backgroundcolor;
 
 //import static tk.glucodata.GlucoseCurve.width;
 //import static tk.glucodata.GlucoseCurve.height;
@@ -73,25 +82,95 @@ class GarminStatus {
 	Spinner spinner;
 	//s/^[ 	]*\([^=]*\)=new.*/TextView \1;/g
 	TextView sdkreadyview;
-	TextView registeredview;
-	TextView restview;
+	TextView restview,connection;
 	//	TextView GarminStatusstr;
 	CheckDirectionBox glucose;
+//	CheckDirectionBox libre3Direct;
+    RadioGroup l3connection;
+	CheckDirectionBox active;
+	RadioButton automaticTransport;
+	RadioButton garminConnectTransport;
+	RadioButton directTransport;
 	AllData alldata;
 	Button next;
 	Button sync;
+	CheckDirectionBox numbersDevice;
+	long selectedPeerId=-1L;
+	boolean updatingSpinner=false;
+	boolean closed=false;
+	java.util.List<AllData.GarminDeviceInfo> shownPeers=java.util.Collections.emptyList();
+	private final Runnable refreshStatus=new Runnable() {
+		@Override public void run() {
+			if(closed || layout==null || layout.getParent()==null) return;
+			refreshDetails();
+			layout.postDelayed(this,1000L);
+		}
+	};
 	Layout layout;
 	private static final String LOG_ID = "GarminStatus";
 
-	static String displaystr(IQDevice device) {
-		IQDevice.IQDeviceStatus stat = device.getStatus();
-		String friendly = device.getFriendlyName();
-		return ((friendly == null) ? device.getDeviceIdentifier() : friendly) + " - " + stat.name();
+	static String displaystr(Context context,AllData.GarminDeviceInfo device) {
+		String name=device.name;
+		int status=device.connected?R.string.isconnected:R.string.isdisconnected;
+		return context.getString(R.string.garmin_device_row,name,context.getString(status));
+	   }
+
+
+
+
+	private String numbersDeviceName(java.util.List<AllData.GarminDeviceInfo> infos) {
+		for(AllData.GarminDeviceInfo info:infos) if(info.numbers) return info.name;
+		return spinner.getContext().getString(R.string.garmin_none);
+	}
+
+	// AllData's English state values are lookup keys here, not displayed text.
+	// Keep this presentation mapping compatible with the existing transport code.
+	private static String communicationStatus(Context context,String state) {
+		int text=R.string.garmin_status_unknown;
+		if(state!=null) switch(state) {
+			case "Kerfstok closed": text=R.string.garmin_status_closed; break;
+			case "Recovering communication": text=R.string.garmin_status_recovering; break;
+			case "Communication error": text=R.string.garmin_status_error; break;
+			case "Connecting": text=R.string.garmin_status_connecting; break;
+			case "Not connected": text=R.string.isdisconnected; break;
+			case "Waiting for Kerfstok START": text=R.string.garmin_status_waiting_start; break;
+			case "Connected; Kerfstok not yet ready": text=R.string.garmin_status_not_ready; break;
+			case "Waiting for glucose acknowledgement": text=R.string.garmin_status_waiting_glucose; break;
+			case "Waiting for history acknowledgement": text=R.string.garmin_status_waiting_history; break;
+			case "Two-way communication confirmed": text=R.string.garmin_status_confirmed; break;
+			case "Receiving; replies not yet confirmed": text=R.string.garmin_status_receiving; break;
+			case "Sending; replies not yet confirmed": text=R.string.garmin_status_sending; break;
+			case "Connected; communication not yet confirmed": text=R.string.garmin_status_unconfirmed; break;
+		}
+		return context.getString(text);
+	}
+
+	private static String transportResult(Context context,IQMessageStatus status) {
+		int text;
+		switch(status) {
+			case SUCCESS: text=R.string.success; break;
+			case FAILURE_DEVICE_NOT_CONNECTED: text=R.string.isdisconnected; break;
+			case FAILURE_DURING_TRANSFER: text=R.string.garmin_transfer_failed; break;
+			case FAILURE_INVALID_DEVICE: text=R.string.garmin_invalid_device; break;
+			case FAILURE_INVALID_FORMAT: text=R.string.garmin_invalid_format; break;
+			case FAILURE_MESSAGE_TOO_LARGE: text=R.string.garmin_message_too_large; break;
+			case FAILURE_UNSUPPORTED_TYPE: text=R.string.garmin_unsupported_type; break;
+			case FAILURE_UNKNOWN:
+			default: text=R.string.garmin_unknown_failure; break;
+		}
+		return context.getString(text);
+	}
+
+	private static String lastError(Context context,String error) {
+		if("No Kerfstok START acknowledgement".equals(error)) return context.getString(R.string.garmin_no_start_ack);
+		if("No glucose acknowledgement".equals(error)) return context.getString(R.string.garmin_no_glucose_ack);
+		// Other values are detailed transport diagnostics supplied by AllData.
+		return error;
 	}
 
 	static private void setidview(MainActivity context, AllData alldata,View parent,View parentlayout) {
 		EnableControls(parent,false);
-		var idlabel = getlabel(context, "Garmin Watch app ID:");
+		var idlabel = getlabel(context, context.getString(R.string.garmin_watch_app_id));
 
 		var defaultapp = new CheckDirectionBox(context);
 		defaultapp.setText(R.string.defaultname);
@@ -184,19 +263,19 @@ class GarminStatus {
 						String id = editid.getText().toString();
 						int idlen = id.length();
 						if (idlen != 32) {
-							Applic.argToaster(context, "ID should be 32 characters long (now " + idlen + ")", Toast.LENGTH_SHORT);
+							Applic.argToaster(context, context.getString(R.string.garmin_id_length,idlen), Toast.LENGTH_SHORT);
 							return;
 						}
 						if (!garminid.equals(id)) {
 							if (!(changed = Natives.setgarminid(id))) {
-								Applic.argToaster(context, "Changed id failed", Toast.LENGTH_SHORT);
+								Applic.argToaster(context, context.getString(R.string.garmin_id_change_failed), Toast.LENGTH_SHORT);
 								return;
 							}
 
 						}
 					}
 					if (changed)
-						alldata.reinit(context);
+						alldata.restartGarmin(context);
 					context.doonback();
 					context.doonback();
 					context.doonback();
@@ -207,88 +286,227 @@ class GarminStatus {
 	}
 
 	public GarminStatus(MainActivity context, AllData alldata,View parentlayout) {
-   		EnableControls(parentlayout,false);
+
+      context.themeLightBars();
+   	//	EnableControls(parentlayout,false);
 		this.alldata = alldata;
+		// Pairing is performed in Android Bluetooth settings. Re-read bonded and
+		// Garmin Connect devices whenever Garmin Status is opened so a newly paired
+		// watch appears without restarting Juggluco.
+		alldata.refreshGarminDevices(context);
 		spinner = new Spinner(context);
 		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				{if(doLog) {Log.i(LOG_ID, "onItemSelected");};};
-				if (alldata.devices != null) {
-					alldata.devused = position;
-					long oldident = numio.getident();
-					long ident = alldata.devices.get(position).getDeviceIdentifier();
-					if (oldident != ident) {
-						numio.setident(ident);
-						alldata.reinit(context);
-					}
+				if(updatingSpinner) return;
+				var infos=alldata.getGarminDeviceInfos();
+				if(position>=0 && position<infos.size()) {
+					selectedPeerId=infos.get(position).id;
+					refreshDetails();
 				}
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				Applic.argToaster(parent.getContext(), "Nothing selected", Toast.LENGTH_SHORT);
-			}
+			public void onNothingSelected(AdapterView<?> parent) { }
 		});
-		RangeAdapter<IQDevice> adap = new RangeAdapter<>(alldata.devices, context, GarminStatus::displaystr);
+		selectedPeerId=alldata.getNumbersDeviceId();
+		updatingSpinner=true;
+		RangeAdapter<AllData.GarminDeviceInfo> adap = new RangeAdapter<>(alldata.getGarminDeviceInfos(), context, device -> displaystr(context,device));
 		spinner.setAdapter(adap);
+		updatingSpinner=false;
 		avoidSpinnerDropdownFocus(spinner);
 
 		sdkreadyview = new TextView(context);
 		float density = GlucoseCurve.metrics.density;
-		int pad = (int) density;
-		int morepad = (int) (density * 4.0);
-		sdkreadyview.setPadding(pad, morepad, morepad, pad * 2);
-//		sdkreadyview.setPadding(0,0,0,0);
-		registeredview = new TextView(context);
+		sdkreadyview.setPadding(0,0,(int)(density*10.0f),0);
+
 		restview = new TextView(context);
+        restview.setMovementMethod(new ScrollingMovementMethod());
+
+        restview.setSingleLine(false);
+        restview.setHorizontallyScrolling(false);
+        restview.setEllipsize(null);
+        restview.setLayoutParams(new ViewGroup.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+
+        var method=getlabel(context,R.string.mirror_transport);
 		sync = new Button(context);
 		sync.setText(R.string.sync);
-		sync.setOnClickListener(
-				v -> alldata.sync());
-		Button refresh = new Button(context);
-		refresh.setText(R.string.refresh);
-		refresh.setOnClickListener(
-				v -> show());
+		sync.setOnClickListener(v -> alldata.sync(selectedPeerId));
 		Button ok = new Button(context);
 		ok.setText(R.string.closename);
 		Button help = getbutton(context, R.string.helpname);
-		help.setOnClickListener(v -> helplight(R.string.kerfstok, context));
+		help.setOnClickListener(v -> help(R.string.kerfstok, context));
 		glucose = new CheckDirectionBox(context);
 		glucose.setText(R.string.glucose);
-		glucose.setChecked(alldata.sendtowatch);
-		glucose.setOnClickListener(
-				v -> {
-					if (glucose.isChecked())
-						alldata.startglucose();
+		glucose.setChecked(false);
+		glucose.setOnClickListener(v -> {
+			if(!alldata.setGarminGlucose(context,selectedPeerId,glucose.isChecked())) {
+				glucose.setChecked(false);
+				Applic.argToaster(context,context.getString(R.string.garmin_select_device),Toast.LENGTH_SHORT);
+				}
+			show();
+			});
+      
+		l3connection=new RadioGroup(context);
+        var marg= Layout.getMargins(l3connection);
 
-					else
-						alldata.stopglucose();
-				});
+       marg.topMargin=(int)(density*8.0f);
+       marg.rightMargin=(int)(density*8.0f);
+		l3connection.setOrientation(RadioGroup.HORIZONTAL);
+        var directstring=context.getString(R.string.directsensor);
+        var direct=getlabel(context, directstring);
+        if(directstring.length()==0)
+            direct.setVisibility(GONE);
+        var connectionstring=context.getString(R.string.connectionl) + " (Libre3)";
+        connection=getlabel(context, connectionstring);
+        if(connectionstring.length()==0)
+             connection.setVisibility(GONE);
+        var l3phone=getradiobuttonId(context, R.string.phone,0);
+        var l3watch=getradiobuttonId(context, R.string.watch,1);
+        l3connection.addView(direct);
+        l3connection.addView(l3phone);
+        l3connection.addView(l3watch);
+
+       
+
+         BooleanConsumer  l3switch=enable-> {
+			if(!alldata.setGarminLibre3Direct(context,selectedPeerId,enable)) {
+				l3phone.setChecked(true);
+				Applic.argToaster(context,context.getString(R.string.garmin_select_device),Toast.LENGTH_SHORT);
+			   }
+			else if(enable && !GarminLibre3.switchCurrentSensor()) {
+				alldata.setGarminLibre3Direct(context,selectedPeerId,false);
+				l3phone.setChecked(true);
+			    }
+			show();
+             };
+
+		l3phone.setOnClickListener(v -> {
+            l3switch.accept(false);
+		    });
+		l3watch.setOnClickListener(v -> {
+            l3switch.accept(true);
+		    });
+
+
+		active=getcheckbox(context,R.string.active,false);
+		active.setOnClickListener(v -> {
+			if(!alldata.setGarminActive(context,selectedPeerId,active.isChecked())) {
+				active.setChecked(false);
+				Applic.argToaster(context,context.getString(R.string.garmin_select_device),Toast.LENGTH_SHORT);
+				}
+			show();
+			});
+ 		numbersDevice=getcheckbox(context,R.string.use_for_numbers,false);
+		numbersDevice.setOnClickListener(v -> {
+			if(selectedPeerId==-1L) {
+				numbersDevice.setChecked(false);
+				Applic.argToaster(context,context.getString(R.string.garmin_select_device),Toast.LENGTH_SHORT);
+				return;
+			}
+			if(!numbersDevice.isChecked()) {
+				if(!alldata.setNumbersDeviceEnabled(context,selectedPeerId,false))
+					Applic.argToaster(context,context.getString(R.string.garmin_select_device),Toast.LENGTH_SHORT);
+				show();
+				return;
+			}
+			long oldId=alldata.getNumbersDeviceId();
+			if(oldId==selectedPeerId) {
+				show();
+				return;
+			}
+			AllData.GarminDeviceInfo selected=null;
+			for(AllData.GarminDeviceInfo info:alldata.getGarminDeviceInfos())
+				if(info.id==selectedPeerId) { selected=info; break; }
+			if(selected==null) {
+				numbersDevice.setChecked(false);
+				Applic.argToaster(context,context.getString(R.string.garmin_select_device),Toast.LENGTH_SHORT);
+				return;
+			}
+			final AllData.GarminDeviceInfo target=selected;
+			new AlertDialog.Builder(context)
+					.setTitle(R.string.garmin_change_numbers_title)
+					.setMessage(context.getString(R.string.garmin_change_numbers_message,
+							alldata.getNumbersDeviceName(),target.name))
+					.setNegativeButton(android.R.string.cancel,(dialog,which) -> {
+						numbersDevice.setChecked(false);
+						show();
+					})
+					.setPositiveButton(R.string.garmin_change,(dialog,which) -> {
+						if(!alldata.setNumbersDevice(context,target.id))
+							Applic.argToaster(context,context.getString(R.string.garmin_select_device),Toast.LENGTH_SHORT);
+						show();
+					})
+					.setOnCancelListener(dialog -> {
+						numbersDevice.setChecked(false);
+						show();
+					})
+					.show();
+			});
+
+		RadioGroup transport=new RadioGroup(context);
+
+		transport.setOrientation(RadioGroup.VERTICAL);
+
+        var  marg2=new ViewGroup.MarginLayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        marg2.bottomMargin=(int)(density*8.0f);
+
+        transport.setLayoutParams(marg2);
+
+		automaticTransport=new RadioButton(context);
+ 		automaticTransport.setText(R.string.transport_automatic);
+		garminConnectTransport=new RadioButton(context);
+ 		garminConnectTransport.setText(R.string.via_garmin);
+		directTransport=new RadioButton(context);
+		directTransport.setText(R.string.transport_bluetooth);
+      RadioButton[] transportRadios={automaticTransport, garminConnectTransport,directTransport};
+        transport.addView(method,new ViewGroup.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
+        for(var b: transportRadios)
+            transport.addView(b,new ViewGroup.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
+        transport.addView(l3connection);
+        transport.addView(connection);
+		switch(alldata.getGarminTransportMode(context)) {
+			case AllData.GARMIN_TRANSPORT_CONNECT: garminConnectTransport.setChecked(true); break;
+			case AllData.GARMIN_TRANSPORT_DIRECT: directTransport.setChecked(true); break;
+			default: automaticTransport.setChecked(true); break;
+		}
+		automaticTransport.setOnClickListener(v ->
+			alldata.setGarminTransportMode(context,AllData.GARMIN_TRANSPORT_AUTOMATIC));
+		garminConnectTransport.setOnClickListener(v ->
+			alldata.setGarminTransportMode(context,AllData.GARMIN_TRANSPORT_CONNECT));
+		directTransport.setOnClickListener(v ->
+			alldata.setGarminTransportMode(context,AllData.GARMIN_TRANSPORT_DIRECT));
 		next = new Button(context);
 		next.setText(R.string.sendqueue);
-		next.setOnClickListener(v -> alldata.nextmessage());
+		next.setOnClickListener(v -> alldata.nextmessage(selectedPeerId));
 		Button reinit = new Button(context);
 		reinit.setText(R.string.reinit);
-		reinit.setOnClickListener(v -> alldata.reinit(context));
-//		var setid = getbutton(context, "ID");
-//		setid.setOnClickListener(v -> setidview(context, alldata));
+		reinit.setOnClickListener(v -> alldata.reinit(context,selectedPeerId));
 		Button config = getbutton(context, R.string.config);
-		config.setOnClickListener(v -> kerfstokconfig(context,alldata,layout,parentlayout));
+		config.setOnClickListener(v ->  {
+                        closed=true;
+                        layout.removeCallbacks(refreshStatus);
+                        kerfstokconfig(context,alldata,layout,parentlayout,selectedPeerId);
+                        }
+                        );
+
 //		restview.setPadding(0,0,0,0);
 		layout = new Layout(context, (l, w, h) -> {
 			return new int[]{w, h};
-		}, new View[]{spinner, refresh}, new View[]{sdkreadyview, registeredview,help}, new View[]{restview,glucose}, new View[]{sync, next, reinit, config, ok}
-		).portraitLayout(new View[]{spinner}, new View[]{sdkreadyview, registeredview},new View[]{restview},new View[]{glucose,refresh},new View[]{help,sync, next}, new View[]{reinit, config, ok});
-//	layout.setBackgroundResource(R.drawable.dialogbackground);
-   layout.setBackgroundResource(R.drawable.dialogbackground);
-		int laypad = (int) (density * 4.0);
-		layout.setPadding(laypad * 2, laypad * 2, laypad * 2, laypad*2);
+		}, new View[]{spinner,sync,next,reinit,sdkreadyview}, new View[]{restview,transport},new View[]{help,config,active,glucose,numbersDevice,ok}
+		).portraitLayout(new View[]{spinner}, new View[]{sync,reinit,next},new View[]{sdkreadyview},new View[]{transport},new View[]{restview},new View[]{active,glucose,numbersDevice}, new View[]{config,help, ok});
+      layout.setBackgroundColor(backgroundcolor);
+ //  layout.setBackgroundResource(R.drawable.dialogbackground);
+		int laypad = (int) (density * 8.0);
+//		layout.setPadding(laypad * 2, laypad * 2, laypad * 2, laypad*2);
 
-    var  params =    new FrameLayout.LayoutParams( WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER|Gravity.CENTER_HORIZONTAL);
+       layout.systembarPadding((left,top,right,bottom)->new int[]{left+laypad,top,right+laypad,bottom});
+//    var  params =    new FrameLayout.LayoutParams( WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER|Gravity.CENTER_HORIZONTAL);
+//    var  params =    new FrameLayout.LayoutParams( MATCH_PARENT, MATCH_PARENT, 0);
 
-    context.addMyContentView(layout, params);
-	//	context.addMyContentView(layout, new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+    context.addMyContentView(layout,new ViewGroup.LayoutParams(MATCH_PARENT,MATCH_PARENT));
 
 		ok.setOnClickListener(
 				v -> {
@@ -296,69 +514,127 @@ class GarminStatus {
 				}
 			);
 		context.setonback(() ->  {
-                        EnableControls(parentlayout,true);
+                        closed=true;
+                        layout.removeCallbacks(refreshStatus);
+                       // EnableControls(parentlayout,true);
+                        context.lightBars(!Natives.getInvertColors());
                         removeContentView(layout);
                         });
 		show();
+		layout.postDelayed(refreshStatus,1000L);
+	}
+
+	private int selectedPosition(java.util.List<AllData.GarminDeviceInfo> infos) {
+		for(int i=0;i<infos.size();i++) if(infos.get(i).id==selectedPeerId) return i;
+		return 0;
+	}
+
+	private boolean samePeerRows(java.util.List<AllData.GarminDeviceInfo> infos) {
+		if(infos.size()!=shownPeers.size()) return false;
+		for(int i=0;i<infos.size();i++) {
+			if(infos.get(i).id!=shownPeers.get(i).id ||
+					!displaystr(spinner.getContext(),infos.get(i)).equals(displaystr(spinner.getContext(),shownPeers.get(i)))) return false;
+		}
+		return true;
 	}
 
 	public void show() {
 		try {
-			if (alldata.devices != null) {
-				RangeAdapter<IQDevice> adap = new RangeAdapter<IQDevice>(alldata.devices, spinner.getContext(), GarminStatus::displaystr);
-				spinner.setAdapter(adap);
-				spinner.setSelection(alldata.devused);
-				//		spinner.getAdapter().notifyDataSetChanged();
+			var infos=alldata.getGarminDeviceInfos();
+			if(selectedPeerId==-1L) selectedPeerId=alldata.getNumbersDeviceId();
+			int selectedPos=selectedPosition(infos);
+			updatingSpinner=true;
+			RangeAdapter<AllData.GarminDeviceInfo> adap=new RangeAdapter<>(infos,spinner.getContext(),device -> displaystr(spinner.getContext(),device));
+			spinner.setAdapter(adap);
+			if(!infos.isEmpty()) {
+				spinner.setSelection(selectedPos);
+				selectedPeerId=infos.get(selectedPos).id;
 			}
-			sdkreadyview.setText("SDK ready: " + (alldata.sdkready() ? "Yes" : "No"));
-			registeredview.setText("Registered: " + (alldata.usewatch ? "Yes" : "No"));
-	/*	if(alldata.appmissing==0)
-			apppresent.setVisibility(INVISIBLE);
-		else*/
-			StringBuilder builder = new StringBuilder();
-			if (alldata.sendtime != 0L) {
-				builder.append("Send: Yes\t\t");
-				builder.append(timestring(alldata.sendtime));
-				builder.append("\n");
-				if (alldata.sendtime > alldata.statustime) {
-					builder.append("No status information\n");
-				} else {
-					builder.append("Status:\t");
-					builder.append(alldata.sendstatus.name());
-					builder.append("\n");
-				}
-			} else {
-				builder.append("Send: No\n");
-			}
-			if (alldata.receivedmessage == 0) {
-				builder.append("Received: No");
-			} else {
-				builder.append("Received: Yes\t\t");
-				builder.append(timestring(alldata.receivedmessage));
-			}
-			String alltext=builder.toString();
-			{if(doLog) {Log.i(LOG_ID,"setText "+alltext);};};
-			restview.setText(alltext);
-			int vis = alldata.usewatch ? VISIBLE : GONE;
-			glucose.setChecked(alldata.sendtowatch);
-			glucose.setVisibility(vis);
-			next.setVisibility(alldata.usewatch && alldata.waiting() ? VISIBLE : GONE);
-			sync.setVisibility(vis);
-//		resend.setVisibility(vis);
-			layout.setVisibility(VISIBLE);
-//			layout.invalidate();
-		} catch (Throwable e) {
-			String mess = e.getMessage();
-			if (mess == null)
-				mess = "GarminStatus error";
-			Log.e(LOG_ID, "Exception: " + mess);
+			shownPeers=infos;
+			updateDetails(infos,selectedPos);
+		} catch(Throwable e) {
+			Log.stack(LOG_ID,"show",e);
+		} finally {
+			updatingSpinner=false;
 		}
-
 	}
 
-	static private void kerfstokconfig(MainActivity context,AllData alldata,View parent,View parentlayout) {
+	private void refreshDetails() {
+		try {
+			var infos=alldata.getGarminDeviceInfos();
+			// A changing timestamp must not rebuild an open spinner every second.
+			if(!samePeerRows(infos)) { show(); return; }
+			updateDetails(infos,selectedPosition(infos));
+		} catch(Throwable e) {
+			Log.stack(LOG_ID,"refreshDetails",e);
+		}
+	}
+
+	private void updateDetails(java.util.List<AllData.GarminDeviceInfo> infos,int selectedPos) {
+		int transportMode=alldata.getGarminTransportMode(spinner.getContext());
+		automaticTransport.setChecked(transportMode==AllData.GARMIN_TRANSPORT_AUTOMATIC);
+		garminConnectTransport.setChecked(transportMode==AllData.GARMIN_TRANSPORT_CONNECT);
+		directTransport.setChecked(transportMode==AllData.GARMIN_TRANSPORT_DIRECT);
+		AllData.GarminDeviceInfo info=infos.isEmpty()?null:infos.get(selectedPos);
+		active.setEnabled(info!=null);
+		active.setChecked(info!=null && info.active);
+		numbersDevice.setEnabled(info!=null);
+		numbersDevice.setChecked(info!=null && info.numbers);
+		Context context=spinner.getContext();
+		if(info==null) sdkreadyview.setText(R.string.garmin_no_device);
+		else sdkreadyview.setText(context.getString(R.string.garmin_connection_status,
+				context.getString(info.direct?R.string.transport_bluetooth:R.string.garmin_connect)));
+//				context.getString(info.connected?R.string.isconnected:R.string.isdisconnected)));
+//		registeredview.setText(context.getString(R.string.garmin_devices_numbers,infos.size(),numbersDeviceName(infos)));
+		StringBuilder builder=new StringBuilder();
+		if(info!=null) {
+			String none=context.getString(R.string.garmin_none);
+			builder.append(context.getString(R.string.garmin_kerfstok_status,communicationStatus(context,info.communicationStatus))).append('\n');
+			builder.append(context.getString(R.string.garmin_last_confirmed_reply,
+					info.lastAcknowledged==0?none:timestring(info.lastAcknowledged))).append('\n');
+			builder.append(context.getString(R.string.garmin_glucose_confirmed,
+					info.lastGlucoseAcknowledged==0?none:timestring(info.lastGlucoseAcknowledged)));
+			if(info.lastGlucoseAcknowledged!=0) {
+				builder.append('\n').append(context.getString(R.string.garmin_glucose_sample,timestring(info.acknowledgedGlucoseTime*1000L)));
+			}
+			builder.append('\n').append(context.getString(R.string.garmin_glucose_ack,
+					context.getString(info.timestampedGlucoseAck?R.string.garmin_ack_timestamped:R.string.garmin_ack_legacy)));
+			builder.append('\n').append(context.getString(R.string.garmin_last_sent,info.lastSend==0?none:timestring(info.lastSend)));
+			builder.append('\n').append(context.getString(R.string.garmin_last_received,info.lastReceived==0?none:timestring(info.lastReceived)));
+			if(info.lastStatus!=null && info.lastStatusTime>=info.lastSend) {
+				builder.append('\n').append(context.getString(R.string.garmin_transport_result,transportResult(context,info.lastStatus)));
+			}
+			if(info.lastError!=null) builder.append('\n').append(context.getString(R.string.garmin_last_error,lastError(context,info.lastError)));
+		}
+		restview.setText(builder.toString());
+//        restview.post(() -> Log.d(LOG_ID, "width=" + restview.getWidth() + " measuredWidth=" + restview.getMeasuredWidth()));
+		// Glucose is a user preference, not a connection-status indicator.  Keep
+		// it available for any known watch so the user can enable sending before
+		// the watch connects; queued/latest glucose will be sent when it becomes
+		// ready.
+		int vis=alldata.usewatch?VISIBLE:GONE;
+		glucose.setChecked(info!=null && info.glucose);
+		glucose.setVisibility(info!=null?VISIBLE:GONE);
+		glucose.setEnabled(info!=null);
+        l3connection.check((info!=null && info.libre3Direct)?1:0);
+		//l3watch.setChecked(info!=null && info.libre3Direct);
+		//l3watch.setChecked(info!=null && info.libre3Direct);
+        var l3vis=(info!=null && info.libre3Installed)?VISIBLE:GONE;
+		l3connection.setVisibility(l3vis);
+		connection.setVisibility(l3vis);
+        boolean l3pos=info!=null && info.active && info.libre3Installed;
+		EnableControls(l3connection,l3pos);
+		connection.setEnabled(l3pos);
+		boolean selectedNumbers=info!=null && info.numbers;
+		next.setVisibility(info!=null && info.active && selectedNumbers && alldata.waiting(selectedPeerId) && !alldata.isSending()?VISIBLE:GONE);
+		sync.setVisibility(info!=null?VISIBLE:GONE);
+		sync.setEnabled(info!=null && info.active && selectedNumbers);
+		layout.setVisibility(VISIBLE);
+	}
+
+	private void kerfstokconfig(MainActivity context,AllData alldata,View parent,View parentlayout,long peerId) {
 		EnableControls(parent,false);
-		var setid = getbutton(context, "ID");
+		var setid = getbutton(context, R.string.garmin_app_id_button);
 
 		Button apppresent = getbutton(context, ((AllData.appmissing < 0) ? context.getString(R.string.watchappinstalled) : context.getString(R.string.getkerfstok)));
 		apppresent.setOnClickListener(v -> {
@@ -377,28 +653,30 @@ class GarminStatus {
 		});
 		var shortcuts = getbutton(context, R.string.shutcuts);
 		shortcuts.setOnClickListener(v -> {
-            context.themeLightBars();
+   //         context.themeLightBars();
 			hidekeyboard(context);
 			new Shortcuts().mkshortlistview(context);
 		});
-		var blackmode = getcheckbox(context,R.string.darkmode, getkerfstokblack());
-		blackmode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-			Applic.app.numdata.setcolor(isChecked);
-			setkerfstokblack(isChecked);
-		});
+		var blackmode = getcheckbox(context,R.string.darkmode, alldata.getKerfstokBlack(context,peerId));
+		blackmode.setOnCheckedChangeListener((buttonView, isChecked) ->
+			alldata.setcolor(context,peerId,isChecked));
+        var alarms = getbutton(context,R.string.alarms);
+        alarms.setVisibility(alldata.canConfigureGarminAlarms(peerId)?VISIBLE:GONE);
 		var Help = getbutton(context, R.string.helpname);
-		Help.setOnClickListener(v-> helplight(tk.glucodata.R.string.garminconfig,context));
+		Help.setOnClickListener(v-> help(tk.glucodata.R.string.garminconfig,context));
 		var Close = getbutton(context, R.string.closename);
 		var layout = new Layout(context, (l, w, h) -> {
 			return new int[]{w, h};
-		},new View[]{apppresent,setid}, new View[]{shortcuts, blackmode}, new View[]{Help, Close});
+		},new View[]{apppresent,setid}, new View[]{shortcuts, blackmode}, new View[]{alarms, Help, Close});
 
 		float density = GlucoseCurve.metrics.density;
 		int laypad = (int) (density * 4.0);
 		layout.setPadding(laypad * 2, laypad * 2, laypad * 2, laypad);
 		setid.setOnClickListener(v -> setidview(context, alldata,layout,parentlayout));
+        alarms.setOnClickListener(v -> GarminAlarms.show(context,alldata,layout,peerId));
 
-		layout.setBackgroundColor(Applic.backgroundcolor);
+//		layout.setBackgroundColor(Applic.backgroundcolor);
+   layout.setBackgroundResource(R.drawable.dialogbackground);
 
     var  params =    new FrameLayout.LayoutParams( WRAP_CONTENT, WRAP_CONTENT,  Gravity.CENTER|Gravity.CENTER_HORIZONTAL);
 
@@ -406,6 +684,8 @@ class GarminStatus {
 	//	context.addMyContentView(layout, new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
 		context.setonback(() -> {
 			EnableControls(parent,true);
+            closed=false;
+            refreshStatus.run();
 			removeContentView(layout);
 			context.hideSystemUI();
 			hidekeyboard(context);

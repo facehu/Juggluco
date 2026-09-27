@@ -217,10 +217,13 @@ boolean newvalues=false;
                     receivedTime=System.currentTimeMillis();
                     updateview();
                     Applic.app.redraw();
+                    Applic.toGarmin(1);
                     }
                 break;
             case RecordsCharUUID:
                 if(Natives.recordCharacteristicChanged(value)) {
+                    if(!newvalues)
+                        Applic.toGarmin(1);
                     newvalues=true;
                     Applic.app.redraw();
                     }
@@ -406,6 +409,7 @@ boolean connected=false;
             }
           discovered=false;
           connected=true;
+          newvalues=false;
           if(bondstate == BluetoothDevice.BOND_BONDING) {
               {if(doLog) {Log.i(LOG_ID, "wait BOND_BONDING");};};
               }

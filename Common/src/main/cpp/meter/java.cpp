@@ -64,6 +64,7 @@ extern "C" JNIEXPORT jbyteArray JNICALL   fromjava(careSenseTimeCMD)(JNIEnv *env
 
 extern void addCalibration(uint32_t tim,int type,Num *num,const Numdata *numdata) ;
 extern void    setnumchanged(uint32_t tim);
+
 extern "C" JNIEXPORT jboolean JNICALL   fromjava(GlucoseMeterSave)(JNIEnv *env, jclass cl,jint meterIndex,jbyteArray value) {
     if(settings->staticnum()) {
         LOGAR("GlucoseMeterSave: staticnum don't save");
@@ -79,45 +80,46 @@ extern "C" JNIEXPORT jboolean JNICALL   fromjava(GlucoseMeterSave)(JNIEnv *env, 
         LOGGER("GlucoseMeterSave length (%d) <14\n",arlen);
         return false;
         }
-    const CritAr  bluedata(env,value);
-    const MeterData *glu=reinterpret_cast<const MeterData *>(bluedata.data());
-    GlucoseMeter *meter= settings->data()->getGlucoseMeter(meterIndex);
-    if(!meter) {
-        LOGGER("GlucoseMeterSave no meter at %d\n",meterIndex);
-        return false;
-        }
-    const auto timeoffset=glu->getTimeoffset();
-    const uint32_t timeorig=glu->time.getLocaltime();
-    const uint32_t timcorrected=timeorig+meter->timeoffset+timeoffset*60;
-    auto mgdL=glu->getmgdL();
-    #ifndef NOLOG
-    char timebuf1[27],timebuf2[27];
-    time_t ort=timeorig,cort=timcorrected;
-    LOGGER("GlucoseMeterSave index=%d	%.2f	mg/dL	%.1f	mmol/L		timeOffsetPresent=%d	contextInfoFollows=%d	typeAndLocationPresent=%d orig=%.24s genoffset=%d specoffset=%d corrected=%s",glu->index,mgdL,mgdL/18.0,glu->timeOffsetPresent,glu->contextInfoFollows,glu->typeAndLocationPresent,ctime_r(&ort,timebuf1),meter->timeoffset,timeoffset,ctime_r(&cort,timebuf2));
-    #endif
     bool ret=false;
-    if(timcorrected>meter->lastTime) {
-        float value;
-        if(settings->data()->unit==1)  {
-            value=std::round(convertmultmmol*100.0f*mgdL)*.1f;
+    {
+        const CritAr  bluedata(env,value);
+        const MeterData *glu=reinterpret_cast<const MeterData *>(bluedata.data());
+        GlucoseMeter *meter= settings->data()->getGlucoseMeter(meterIndex);
+        if(!meter) {
+            LOGGER("GlucoseMeterSave no meter at %d\n",meterIndex);
+            return false;
             }
-        else
-             value=std::roundf(mgdL);
-        Numdata *numda=getherenums();
-        if(Num *num=numda->numsaveonly(timcorrected, value,bloodvar,0,true)) { 
-            uint32_t now=time(nullptr);
-            if(abs((int)(now-timcorrected))<60)  {
-                addCalibration( timcorrected,bloodvar,num,numda);
-                if(backup)
-                    backup->wakebackup(wakenums);
-                setnumchanged(now);
-                ret=true;
+        const auto timeoffset=glu->getTimeoffset();
+        const uint32_t timeorig=glu->time.getLocaltime();
+        const uint32_t timcorrected=timeorig+meter->timeoffset+timeoffset*60;
+        auto mgdL=glu->getmgdL();
+        #ifndef NOLOG
+        char timebuf1[27],timebuf2[27];
+        time_t ort=timeorig,cort=timcorrected;
+        LOGGER("GlucoseMeterSave index=%d	%.2f	mg/dL	%.1f	mmol/L		timeOffsetPresent=%d	contextInfoFollows=%d	typeAndLocationPresent=%d orig=%.24s genoffset=%d specoffset=%d corrected=%s",glu->index,mgdL,mgdL/18.0,glu->timeOffsetPresent,glu->contextInfoFollows,glu->typeAndLocationPresent,ctime_r(&ort,timebuf1),meter->timeoffset,timeoffset,ctime_r(&cort,timebuf2));
+        #endif
+        if(timcorrected>meter->lastTime) {
+            float value;
+            if(settings->data()->unit==1)  {
+                value=std::round(convertmultmmol*100.0f*mgdL)*.1f;
+                }
+            else
+                 value=std::roundf(mgdL);
+            Numdata *numda=getherenums();
+            if(Num *num=numda->numsaveonly(timcorrected, value,bloodvar,0,true)) { 
+                uint32_t now=time(nullptr);
+                if(abs((int)(now-timcorrected))<60)  {
+                    addCalibration( timcorrected,bloodvar,num,numda);
+                    if(backup)
+                        backup->wakebackup(wakenums);
+                    setnumchanged(now);
+                    ret=true;
+                    }
                 }
             }
-        }
-    meter->nextIndex=glu->index+1;
-    meter->lastTime=timcorrected;
-
+        meter->nextIndex=glu->index+1;
+        meter->lastTime=timcorrected;
+    }
     return ret;
     }
 #include "Context.hpp"
@@ -208,6 +210,8 @@ extern "C" JNIEXPORT jboolean JNICALL   fromjava(recordCharacteristicChanged)(JN
         LOGGER("Meter: recordCharacteristicChanged length (%d) <4\n",arlen);
         return false;
         }
+    uint8_t dat3;
+    {
     const CritAr  bluedata(env,value);
     const uint8_t *data=(const uint8_t*)bluedata.data();
     const uint8_t reg[]={6,0,1};
@@ -215,17 +219,21 @@ extern "C" JNIEXPORT jboolean JNICALL   fromjava(recordCharacteristicChanged)(JN
         LOGAR("Meter: recordCharacteristicChanged unrecognised unput");
         return false;
         }
-    switch(data[3]) {
+    dat3=data[3];
+    }
+    switch(dat3) {
         case 1: {
             LOGAR("Meter recordCharacteristicChanged received data"); 
             calibrateLast();
+            if(backup)
+                 backup->wakebackup(wakenums);
             return true;
             }
         case 6: {
            LOGAR("Meter recordCharacteristicChanged received NO data"); 
            };break;
        default:
-           LOGGER("Meter recordCharacteristicChanged unrecognised byte %d\n",data[3]);
+           LOGGER("Meter recordCharacteristicChanged unrecognised byte %d\n",dat3);
         }
      return false;
     }

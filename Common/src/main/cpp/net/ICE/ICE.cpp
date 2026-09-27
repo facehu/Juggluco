@@ -53,6 +53,7 @@ using namespace std::literals;
 #include "destruct.hpp"
 #include "PlaceBuf.hpp"
 #include "ICEConnect.hpp"
+#include "juice/juggluco.h"
 
 constexpr const int maxconnectionunused=24*60*60;
 extern uint32_t getConnectTime(const int allindex);
@@ -258,6 +259,11 @@ static void on_recv1(juice_agent_t *agent, const char *data, size_t size, void *
     userdata[head->side!=host.side].on_recv(agent,data,size,allindex);
     }
 
+
+
+
+
+
 static bool diagnostics(juice_agent *agent,const char *name,bool side) {
     bool success=true;
     // Retrieve candidates
@@ -272,11 +278,12 @@ static bool diagnostics(juice_agent *agent,const char *name,bool side) {
         success=false;
         }
     // Retrieve addresses
-    char localAddr[JUICE_MAX_ADDRESS_STRING_LEN];
-    char remoteAddr[JUICE_MAX_ADDRESS_STRING_LEN];
-    if (int res=juice_get_selected_addresses_inc_type(agent, localAddr, JUICE_MAX_ADDRESS_STRING_LEN, remoteAddr, JUICE_MAX_ADDRESS_STRING_LEN);res == 0) {
-        LOGGERICE("%s %d: Local address: %s\n", name,side,localAddr);
-        LOGGERICE("%s %d: Remote address: %s\n", name,side,remoteAddr);
+    char localAddr[JUICE_MAX_TYPED_ADDRESS_STRING_LEN];
+    char remoteAddr[JUICE_MAX_TYPED_ADDRESS_STRING_LEN];
+    if (int res = juice_get_selected_addresses_inc_type(agent, localAddr, sizeof(localAddr), remoteAddr, sizeof(remoteAddr)); res == JUICE_ERR_SUCCESS) {
+
+    LOGGERICE("%s %d: Local address: %s\n", name,side,localAddr);
+    LOGGERICE("%s %d: Remote address: %s\n", name,side,remoteAddr);
     }
    else {
         LOGGERICE("%s %d: juice_get_selected_addresses failed: %s (%d)\n",name,side,juiceErrorString(res),res);

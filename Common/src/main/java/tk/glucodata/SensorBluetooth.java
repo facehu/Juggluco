@@ -429,6 +429,8 @@ static public void sensorEnded(String str) {
    if(blueone!=null)  {
       blueone.removeDevice(str) ;
       }
+   // Garmin Direct can own the sensor while blueone is null.
+   SensorLifecycle.ended(str);
     }
 
 
@@ -811,6 +813,7 @@ boolean updateDevicers() {
     }
 
 static boolean updateDevices() {
+    SensorLifecycle.changed();
     if(blueone==null) {
         return false;
         }
@@ -909,6 +912,7 @@ private boolean resetDevicer(long streamptr,String name) {
     }
 
 static public boolean resetDeviceOrFree(long ptr,String name) {
+    SensorLifecycle.added(name);
     if(blueone!=null) {
         return blueone.resetDevicer(ptr,name);
         }
@@ -940,6 +944,7 @@ private boolean resetDevicer(String str,long[] ptrptr) {
     }
 
 static public boolean resetDevice(String str) {
+    SensorLifecycle.added(str);
     long[] ptrptr={0L};
     var ret=resetDevicePtr(str,ptrptr);
     SuperGattCallback.glucosealarms.setLossAlarm();

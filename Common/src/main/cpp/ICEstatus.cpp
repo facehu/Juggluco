@@ -3,7 +3,7 @@
 #include <string_view>
 #include <memory>
 #include "deleter.hpp"
-#include "libjuice/include/juice/juice.h"
+#include "libjuice/include/juice/juggluco.h"
 #include "datbackup.hpp"
 #include "mirrorstatus.hpp"
 #include "net/netstuff.hpp"

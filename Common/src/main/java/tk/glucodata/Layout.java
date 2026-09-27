@@ -523,6 +523,129 @@ static private int childHeight(View child) {
       return  Math.max(child.getMinimumHeight(),child.getMeasuredHeight());
    }
 
+int rowgeo(final int start, final int row,
+           int widthMeasureSpec, int heightMeasureSpec) {
+    int end = rowend[row];
+    int maxWidth = 0, totHeight = 0;
+    int maxbaseline = 0;
+    int not = 0;
+
+    matchparent[row] = null;
+
+    View match = null;
+    int matchLeft = 0, matchRight = 0;
+    int matchTop = 0, matchBottom = 0;
+
+    /*
+     * First pass: measure all ordinary children.
+     * Remember the MATCH_PARENT child, but don't measure it yet.
+     */
+    for (int c = start; c < end; c++) {
+        View child = getChildAt(c);
+
+        if (child == null || child.getVisibility() == GONE)
+            continue;
+
+        ViewGroup.LayoutParams params = child.getLayoutParams();
+
+        int leftmargin, rightmargin, topmargin, bottommargin;
+
+        if (params instanceof ViewGroup.MarginLayoutParams) {
+            var margins = (ViewGroup.MarginLayoutParams) params;
+            leftmargin = margins.leftMargin;
+            rightmargin = margins.rightMargin;
+            topmargin = margins.topMargin;
+            bottommargin = margins.bottomMargin;
+        } else {
+            leftmargin = rightmargin = topmargin = bottommargin = 0;
+        }
+
+        not++;
+
+        if (params != null && params.width == MATCH_PARENT) {
+            matchparent[row] = child;
+            match = child;
+
+            matchLeft = leftmargin;
+            matchRight = rightmargin;
+            matchTop = topmargin;
+            matchBottom = bottommargin;
+            continue;
+        }
+
+        measureChild(child, widthMeasureSpec, heightMeasureSpec);
+
+        maxWidth += childWidth(child) + leftmargin + rightmargin;
+
+        final int h = childHeight(child) + topmargin + bottommargin;
+        if (totHeight < h)
+            totHeight = h;
+
+        if (usebaseline) {
+            int baseline = child.getBaseline();
+            if (baseline < 0)
+                baseline = (int) (h / 2 - basefromiddle);
+
+            if (baseline > maxbaseline)
+                maxbaseline = baseline;
+        }
+    }
+
+    /*
+     * Now we know how much horizontal space the other Views need.
+     * Measure MATCH_PARENT at exactly the space that will remain.
+     */
+    if (match != null) {
+        ViewGroup.LayoutParams params = match.getLayoutParams();
+
+        int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+
+        int available =
+                parentWidth
+                - getPaddingLeft()
+                - getPaddingRight()
+                - maxWidth
+                - matchLeft
+                - matchRight;
+
+        if (available < 0)
+            available = 0;
+
+        int childWidthSpec = MeasureSpec.makeMeasureSpec(
+                available, MeasureSpec.EXACTLY);
+
+        int childHeightSpec = getChildMeasureSpec(
+                heightMeasureSpec,
+                getPaddingTop() + getPaddingBottom()
+                        + matchTop + matchBottom,
+                params.height);
+
+        match.measure(childWidthSpec, childHeightSpec);
+
+//        maxWidth += match.getMinimumWidth() + matchLeft + matchRight;
+        maxWidth +=  matchLeft + matchRight;
+
+        final int h = childHeight(match) + matchTop + matchBottom;
+        if (totHeight < h)
+            totHeight = h;
+
+        if (usebaseline) {
+            int baseline = match.getBaseline();
+            if (baseline < 0)
+                baseline = (int) (h / 2 - basefromiddle);
+
+            if (baseline > maxbaseline)
+                maxbaseline = baseline;
+        }
+    }
+
+    notgone[row] = not;
+    maxwidths[row] = maxWidth;
+    baselines[row] = maxbaseline;
+
+    return totHeight;
+}
+/*
 int rowgeo(final int start,final int row,int widthMeasureSpec, int heightMeasureSpec) {
    int end=rowend[row];
    int maxWidth=0,totHeight=0;
@@ -545,12 +668,39 @@ int rowgeo(final int start,final int row,int widthMeasureSpec, int heightMeasure
           else {
             leftmargin=rightmargin=bottommargin=topmargin=0;
             }
-          if(params!=null&&params.width==MATCH_PARENT) {
-               matchparent[row]=child;
-               measureChild(child,1, heightMeasureSpec);
-               maxWidth+=child.getMinimumWidth()+leftmargin+rightmargin;
 
-               }
+if(params!=null && params.width==MATCH_PARENT) {
+    matchparent[row]=child;
+
+    int availableWidth =
+            MeasureSpec.getSize(widthMeasureSpec)
+            - getPaddingLeft()
+            - getPaddingRight()
+            - leftmargin
+            - rightmargin;
+
+    int childWidthSpec = MeasureSpec.makeMeasureSpec(
+            Math.max(0, availableWidth),
+            MeasureSpec.EXACTLY);
+
+    int childHeightSpec = getChildMeasureSpec(
+            heightMeasureSpec,
+            getPaddingTop() + getPaddingBottom()
+                    + topmargin + bottommargin,
+            params.height);
+
+    child.measure(childWidthSpec, childHeightSpec);
+
+    maxWidth += childWidth(child) + leftmargin + rightmargin;
+}
+
+
+//          if(params!=null&&params.width==MATCH_PARENT) {
+//               matchparent[row]=child;
+//               measureChild(child,1, heightMeasureSpec);
+//               maxWidth+=child.getMinimumWidth()+leftmargin+rightmargin;
+//
+//               } 
           else {
                 measureChild(child,widthMeasureSpec, heightMeasureSpec);
                 maxWidth +=  childWidth(child)+leftmargin+rightmargin;
@@ -570,6 +720,7 @@ int rowgeo(final int start,final int row,int widthMeasureSpec, int heightMeasure
     baselines[row]=maxbaseline;
     return totHeight;
     }
+    */
 boolean usebaseline=true;
 int rowmax;
 int totHeight;

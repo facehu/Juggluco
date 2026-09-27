@@ -35,6 +35,7 @@ extern "C" {
 /* Fixed application protocol sizes. */
 enum {
     L3_LEN_SAVED_AUTHORIZATION = 149,
+    L3_LEN_CHALLENGE_CONTEXT = L3_CHALLENGE_BLOCK_CONTEXT_WORDS * 4,
     L3_LEN_PATCH_CERTIFICATE = 140,
     L3_LEN_PATCH_PUBLIC_KEY = 65,
     L3_LEN_EPHEMERAL_PUBLIC_KEY = 64,
@@ -158,6 +159,9 @@ int l3_app_core_decrypt_challenge_response_into(
 int l3_app_core_export_saved_authorization_into(
     const l3_app_core *core,
     uint8_t out149[L3_LEN_SAVED_AUTHORIZATION]);
+int l3_app_core_export_challenge_context_into(
+    const l3_app_core *core,
+    uint8_t out176[L3_LEN_CHALLENGE_CONTEXT]);
 
 size_t l3_app_core_authorization_scratch_size(void);
 size_t l3_app_core_authorization_scratch_alignment(void);

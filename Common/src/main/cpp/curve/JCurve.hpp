@@ -282,7 +282,8 @@ void setdiffcurrent(bool val) {
 template <class TX,class TY> void    calihistcurve(NVGcontext* avg,const SensorGlucoseData  * hist, const int32_t firstpos, const int32_t lastpos,const TX &xtrans,const TY &ytrans,const int colorindex) ;
     std::pair<float,float>    drawtrender(NVGcontext* avg,const std::array<uint16_t,16> &trend,const float x,const float y,const float w,const float h);
     void    showok(NVGcontext* avg,bool good,bool up);
-     bool           showerror(NVGcontext* avg,const std::string_view str1,const std::string_view str2);
+ //    bool           showerror(NVGcontext* avg,const std::string_view str1,const std::string_view str2);
+ bool           showerror(NVGcontext* avg,const string_view str1,const string_view str2,std::string_view sensorid) ;
      void           scanwait(NVGcontext* avg);
 
  void       showscanner(NVGcontext* avg,const SensorGlucoseData *hist,int scanident,time_t nu,bool calibrate);
@@ -307,9 +308,12 @@ template <class TX,class TY> void    calihistcurve(NVGcontext* avg,const SensorG
     void    startstep(NVGcontext* avg,const NVGcolor &col);
     void    endstep(NVGcontext* avg);
     float   drawText(NVGcontext* avg,float x,float y,const char *start,const char *end);
-     void    defaulterror(NVGcontext* avg,int scerror);
-     bool    errorpair(NVGcontext* avg,const errortype &error);
-    int    badscanMessage(NVGcontext* avg,int kind);
+//     void    defaulterror(NVGcontext* avg,int scerror);
+ void    defaulterror(NVGcontext* avg,int scerror,std::string_view sensorid)   ;
+ //    bool    errorpair(NVGcontext* avg,const errortype &error);
+         bool    errorpair(NVGcontext* avg,const errortype &error,std::string_view sensorid);
+//    int    badscanMessage(NVGcontext* avg,int kind);
+int    badscanMessage(NVGcontext* avg,int kind,std::string_view sensorid) ;
      int    showoldscan(NVGcontext* avg,uint32_t nu);
      void    withredisplay(NVGcontext* avg,uint32_t nu);
     int    onestep(NVGcontext* avg);

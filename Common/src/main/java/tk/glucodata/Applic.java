@@ -160,12 +160,31 @@ static public    void argToaster(Context context,int res,int duration) {
      argToaster(context,context.getString(res), duration);
 }
 static public    void argToaster(Context context,String message,int duration) {
-    Toast.makeText(context,message, duration).show();
+   // Toast.makeText(context,message, duration).show();
+
+    FullToasts.argToaster(context, message, duration);
     if(!DontTalk) {
         if(initproccalled&&Natives.speakmessages()) 
             speak(message);
         }
     }
+
+
+
+
+public static void argToasterWait(Context context, String message) {
+    FullToasts.argToasterWait(context, message);
+    if(!DontTalk) {
+        if(initproccalled&&Natives.speakmessages()) 
+            speak(message);
+        }
+    }
+
+
+
+
+
+
 static public void RunOnUiThread(Runnable action) {
     if (Thread.currentThread().getId() != uiThreadId) {
         mHandler.post(action);
@@ -203,7 +222,13 @@ public void setunit(int unit)  {
      if(Applic.unit!=unit)
         SuperGattCallback.previousglucosevalue=0.0f;
     Natives.setunit(unit);
+    Applic.unit=unit;
     Notify.mkunitstr(app,unit);
+    // Kerfstok and the Libre3/Kerfstok superset share the GLUNITS protocol.
+    // This also updates a direct-Libre3 watch when no phone glucose packets are
+    // currently being sent (those packets normally carry the unit themselves).
+    if(!isWearable && numdata!=null && Natives.gethasgarmin())
+        numdata.sendunits(unit);
     }
 public void sendlabels() {
     if(!isWearable) {

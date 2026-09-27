@@ -141,7 +141,7 @@ extern "C" JNIEXPORT jstring JNICALL   fromjava(getbackuphostname)(JNIEnv *envin
     */
 
 
-int getposbylabel(const char *label) {
+static int getposbylabel(const char *label) {
     const int nr=backup->gethostnr();
     for(int pos=0;pos<nr;++pos) {
         const passhost_t &host=backup->getupdatedata()->allhosts[pos];
@@ -155,7 +155,7 @@ int getposbylabel(const char *label) {
     LOGGER("getposbylabel(%s)=-1\n",label);
     return -1;
     }
-bool removebylabel(const char *label) {
+static bool removebylabel(const char *label) {
     int pos = getposbylabel(label);
     if (pos < 0)
         return false;
@@ -173,27 +173,31 @@ extern "C" JNIEXPORT jboolean JNICALL   fromjava(removebylabel)(JNIEnv *env, jcl
 #ifndef ABBOTT
 
 passhost_t * getwearoshost(const bool create,const char *label,bool,bool=false,bool=false);
-bool resetbylabel(const char *label,bool galaxy) {
-    
+   
+static bool resetbylabel(const char *label,bool galaxy) {
     int pos=getposbylabel(label);
     if(pos<0)
         return false;
+
     const passhost_t &host=backup->getupdatedata()->allhosts[pos];
     const int nr=host.nr;
-    if(nr>0) {
-        struct sockaddr_in6 ips[passhost_t::maxip];
+
+    struct sockaddr_in6 ips[passhost_t::maxip];
+    if(nr>0)
         memcpy(ips,host.ips,sizeof(ips));
 
-        passhost_t *newhost=getwearoshost(true,label,galaxy,true);
+    passhost_t *newhost=getwearoshost(true,label,galaxy,true);
+    if(!newhost)
+        return false;
+
+    if(nr>0) {
         memcpy(newhost->ips,ips,sizeof(ips));
         newhost->nr=std::min(nr,passhost_t::maxip);
         }
-    else {
-        backup->deletehost(pos);
-        }
+
     return true;
     }
-    
+   
 extern "C" JNIEXPORT jboolean JNICALL   fromjava(resetbylabel)(JNIEnv *env, jclass cl,jstring jlabel,jboolean galaxy) {
     const char *label = env->GetStringUTFChars( jlabel, NULL);
     if(!label) return false;
@@ -202,7 +206,7 @@ extern "C" JNIEXPORT jboolean JNICALL   fromjava(resetbylabel)(JNIEnv *env, jcla
     return resetbylabel(label,galaxy);
     }
 #endif
-const char *gethostlabel(int pos) {
+static const char *gethostlabel(int pos) {
     if(!backup||pos<0||pos>=backup->gethostnr())
         return nullptr;
     const passhost_t &host=backup->getupdatedata()->allhosts[pos];
@@ -210,7 +214,7 @@ const char *gethostlabel(int pos) {
         return nullptr;
     return host.getname();
     }
-bool gethosttestip(int pos) {
+static bool gethosttestip(int pos) {
     if(!backup||pos>=backup->gethostnr())
         return true;
     const passhost_t &host=backup->getupdatedata()->allhosts[pos];
@@ -567,13 +571,25 @@ extern "C" JNIEXPORT void JNICALL   fromjava(switchSync)(JNIEnv *env, jclass cl)
     }
 
 //void wakebackup(myuintptr_t kind=wakeall,bool sendwake=false){
-void resetnetwork() {
+extern void resetnetwork();
+
+static void resetnetworkthread(bool *useresetnetwork) {
     LOGSTRING("resetnetwork\n");
     if(backup) {
         backup->closeallsocks();
         backup->getupdatedata()->wakesender();
         networkpresent=true;
         backup->notupdatedsettings();
+        }
+    *useresetnetwork=true;
+    }
+extern void resetnetwork();
+void resetnetwork() {
+    static bool useresetnetwork=true;
+    if(useresetnetwork) {
+        useresetnetwork=false;
+        std::thread th(resetnetworkthread,&useresetnetwork);
+        th.detach();
         }
     }
 extern "C" JNIEXPORT void JNICALL   fromjava(resetnetwork)(JNIEnv *env, jclass cl) {

@@ -890,8 +890,11 @@ Backup::Backup(std::string_view base): mapdata(base,backupdat,sizeof(struct upda
 
 
    startactivereceivers();
-   if(!getupdatedata()->port[0])
-       strcpy(getupdatedata()->port,defaultport );
+   if(!getupdatedata()->port[0]) {
+//       strcpy(getupdatedata()->port,defaultport );
+       const std::string_view defport=getDefaultPort();
+       memcpy(getupdatedata()->port, defport.data(),defport.size());
+       }
 
    void    backupbase(string_view basedir);
    backupbase(globalbasedir);

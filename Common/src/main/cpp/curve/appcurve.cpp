@@ -768,19 +768,19 @@ extern bool showsummarygraph;
 bool restart=false;
 //static int showoldscan(NVGcontext* avg,uint32_t ) ;
 
- void    JCurve::defaulterror(NVGcontext* avg,int scerror)   {
+ void    JCurve::defaulterror(NVGcontext* avg,int scerror,std::string_view sensorid)   {
         char buf[50];
         const errortype *error=usedtext->scanerrors;
         size_t len=snprintf(buf,50,error->first.data(),scerror);
-        showerror(avg,error->second,{buf,len});
+        showerror(avg,error->second,{buf,len},sensorid);
         }
 
 
- bool    JCurve::errorpair(NVGcontext* avg,const errortype &error) {
-    return showerror(avg,error.first,error.second);
+ bool    JCurve::errorpair(NVGcontext* avg,const errortype &error,std::string_view sensorid) {
+    return showerror(avg,error.first,error.second,sensorid);
     }
 
-int    JCurve::badscanMessage(NVGcontext* avg,int kind) {
+int    JCurve::badscanMessage(NVGcontext* avg,int kind,std::string_view sensorid) {
     const uint32_t nu=time(nullptr);
     int res=1;
     switch(showoldscan(avg,nu)) {
@@ -789,30 +789,30 @@ int    JCurve::badscanMessage(NVGcontext* avg,int kind) {
             const int scerror= kind&0xff;
             switch(scerror) {
                 case 0xF8: {
-                        errorpair(avg,usedtext->libre3zeroID);
+                        errorpair(avg,usedtext->libre3zeroID,sensorid);
                         };break;
                 case 0xF9: {
-                    showerror(avg,usedtext->nolibre3.first,usedtext->needsandroid8);
+                    showerror(avg,usedtext->nolibre3.first,usedtext->needsandroid8,sensorid);
                     };break;
                 case 0xFA: {
     //                showerror(avg,"FreeStyle Libre 3, Scan error", "Try again");
-                    errorpair(avg,usedtext->libre3scanerror);
+                    errorpair(avg,usedtext->libre3scanerror,sensorid);
                     };
                     break;
                 case 0xFB:
-                    errorpair(avg,usedtext->libre3wrongID);
+                    errorpair(avg,usedtext->libre3wrongID,sensorid);
                     break;
     //                showerror(avg,"Error, wrong account ID?","Specify in Settings->Libreview the same account used to activate the sensor");break;
                  case 0xFC: {
-                    errorpair(avg,usedtext->libre3scansuccess);
+                    errorpair(avg,usedtext->libre3scansuccess,sensorid);
     //                showerror(avg,"FreeStyle Libre 3 sensor", "Glucose values will now be received by Juggluco");
                     };break;
                 case 0xFD: {
-                    errorpair(avg,usedtext->unknownNFC);
+                    errorpair(avg,usedtext->unknownNFC,sensorid);
     //                showerror(avg,"Unrecognized NFC scan Error", "Try again");
                     };break;
                 case 0xFE: {
-                    errorpair(avg,usedtext->nolibre3);
+                    errorpair(avg,usedtext->nolibre3,sensorid);
     //                showerror(avg,"FreeStyle Libre 3 sensor","Not supported by this version of Juggluco"  );
                     };break;
                 case 0xFF: {
@@ -824,7 +824,7 @@ int    JCurve::badscanMessage(NVGcontext* avg,int kind) {
                     const int bufsize=error->second.size()+5;
                     char buf[bufsize];
                     size_t len=snprintf(buf,bufsize,error->second.data(),kind>>8);
-                    showerror(avg,error->first,{buf,len});
+                    showerror(avg,error->first,{buf,len},sensorid);
                     LOGGER("%s\n",buf);
                     };break;
     /*                        case 7: {
@@ -833,15 +833,15 @@ int    JCurve::badscanMessage(NVGcontext* avg,int kind) {
                                     };break; */
                 case 0:
                 case 15:
-                case 9: defaulterror(avg,scerror);
+                case 9: defaulterror(avg,scerror,sensorid);
                     break;
                 case 12: restart=true;
                 default: 
                  if(scerror>0x10) {
-                    defaulterror(avg,scerror);
+                    defaulterror(avg,scerror,sensorid);
                     }
                 else {
-                    errorpair(avg,usedtext->scanerrors[scerror]);
+                    errorpair(avg,usedtext->scanerrors[scerror],sensorid);
     //                errortype *error=usedtext->scanerrors+scerror; showerror(avg,error->first,error->second);
                     }
                 };break;
@@ -1838,11 +1838,13 @@ static bool  inmenu(float x,float y) {
     return false;
     }
 
- bool           JCurve::showerror(NVGcontext* avg,const string_view str1,const string_view str2) {
+ bool           JCurve::showerror(NVGcontext* avg,const string_view str1,const string_view str2,std::string_view sensorid) {
     startstep(avg,*getyellow());
     nvgFontSize(avg, midsize);
     nvgFillColor(avg, *getblack());
     nvgTextAlign(avg,NVG_ALIGN_LEFT|NVG_ALIGN_BOTTOM);
+    if(sensorid.size())
+            nvgText(avg, dleft+dwidth/10,dtop+statusbarheight+dheight/8, sensorid.begin(),sensorid.end());
     nvgText(avg, dleft+dwidth/10,dtop+dheight/3, str1.begin(), str1.end());
     nvgFontSize(avg, midsize*.8);
     nvgTextAlign(avg,NVG_ALIGN_LEFT|NVG_ALIGN_MIDDLE);

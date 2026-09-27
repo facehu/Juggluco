@@ -98,6 +98,12 @@ private  final void info(String in) {
     }
 @Override
 void free() {
+    // Garmin handoff now uses only saved sensor data. Normal destruction must
+    // cancel pending command retries before releasing this callback's handles.
+    stop=true;
+    connected=false;
+    cancelretrytimer();
+    mActiveBluetoothDevice=null;
     super.free();
     {if(doLog) {Log.i(LOG_ID, SerialNumber + ": "+"free");};};
     cancelalarm();
@@ -133,7 +139,7 @@ private final void checkBluetoothGatt(BluetoothGatt bluetoothGatt) {
         }
     }
 
-/*
+
 private static boolean requestLeConnectionUpdateHidden(
         BluetoothGatt gatt,
         int minInterval,
@@ -156,18 +162,25 @@ private static boolean requestLeConnectionUpdateHidden(
         return false;
     }
 }
-*/
-
 @SuppressWarnings("unused")
 @Keep
 public void onConnectionUpdated(BluetoothGatt gatt, int interval, int latency, int timeout, int status) {
         {if(doLog) {Log.i(LOG_ID, "onConnectionUpdated interval=" + interval + " latency=" + latency + " timeout=" + timeout + " status=" + status);};};
-       /* 
+        /*
         if(isWearable) {
-            if(++updated==2) {
-                requestLeConnectionUpdateHidden(gatt,315, 315, 4, 600, 0, 0);
-                }
-            } */
+            if(interval==12) 
+                requestLeConnectionUpdateHidden( gatt, 6, 6, 0, 500, 0, 0);
+            else {
+                if(interval==6)
+                    requestLeConnectionUpdateHidden( gatt, 24, 24, 0, 500, 0, 0);
+                if(interval>300) {
+    //                requestLeConnectionUpdateHidden(gatt,315, 315, 4, 600, 0, 0);
+    //                requestLeConnectionUpdateHidden(gatt, 300, 300, 4, 600, 0, 0);
+                    requestLeConnectionUpdateHidden( gatt, 300, 300, 6, 600, 0, 0);
+                    }
+                 }
+            }
+            */
       }
 
 @SuppressWarnings("unused")
@@ -211,6 +224,8 @@ public void onConnectionUpdated(BluetoothGatt gatt, int interval, int latency, i
 
 //    private boolean wasConnected = false;
 private boolean connected=false;
+
+//private    boolean waitingForMtu=false;
 //private int updated=0;
     @SuppressLint("MissingPermission")
     @Override 
@@ -231,7 +246,7 @@ private boolean connected=false;
          long tim = System.currentTimeMillis();
         if(newState == STATE_CONNECTED) {
             //resetGlucose=0; 
-            //updated=0;
+           // updated=0;
             connected=true;
             setpriority(bluetoothGatt);
             /*
@@ -240,15 +255,16 @@ private boolean connected=false;
             } */
             constatchange[0] = tim;
             //wasConnected = true;
-            if (!isServicesDiscovered||!getservices()) {
-                if(!mBluetoothGatt.discoverServices()) {
-                                        Log.e(LOG_ID, SerialNumber + ": "+"discoverServices()  failed");
-                                        }
-                else {
-                    {if(doLog) {Log.i(LOG_ID, SerialNumber + ": "+"discoverServices() success");};};
-                    }
+            /*
+          if (isWearable) {
+                    waitingForMtu = bluetoothGatt.requestMtu(517);
+                    Log.i(LOG_ID, SerialNumber + " requestMtu(517)=" + waitingForMtu);
+                    if (waitingForMtu)
+                        return;
+                }
+                */
 
-            } 
+            startServices(bluetoothGatt);
             } else if (newState == STATE_DISCONNECTED) {
 
 //                cancelrefreshalarm();
@@ -282,6 +298,17 @@ private boolean connected=false;
         }
 
 
+private void startServices(BluetoothGatt mBluetoothGatt) {
+            if (!isServicesDiscovered||!getservices()) {
+                if(!mBluetoothGatt.discoverServices()) {
+                          Log.e(LOG_ID, SerialNumber + ": "+"discoverServices()  failed");
+                        }
+                else {
+                    {if(doLog) {Log.i(LOG_ID, SerialNumber + ": "+"discoverServices() success");};};
+                    }
+                }
+
+             }
 
         @Override 
         public void onDescriptorWrite(BluetoothGatt bluetoothGatt, BluetoothGattDescriptor bluetoothGattDescriptor, int status) {
@@ -293,8 +320,16 @@ private boolean connected=false;
         }
 
         @Override // android.bluetooth.BluetoothGattCallback
-        public void onMtuChanged(BluetoothGatt bluetoothGatt, int i2, int i3) {
-        {if(doLog) {Log.i(LOG_ID, SerialNumber + ": "+"onMtuChanged");};};
+        public void onMtuChanged(BluetoothGatt bluetoothGatt, int mtu, int status) {
+        {if(doLog) {Log.i(LOG_ID, SerialNumber + ": "+"onMtuChanged mtu="+mtu+" status="+status);};};
+        /*
+        if(isWearable) {
+             if(waitingForMtu) {
+                waitingForMtu=false;
+                startServices(bluetoothGatt);
+                }
+             }
+             */
         }
 
         @Override // android.bluetooth.BluetoothGattCallback
@@ -428,8 +463,105 @@ private void challenge67() {
     //securityContext=new BCrypt(kEnc,ivEnc);
     cryptptr=initcrypt(cryptptr,kEnc,ivEnc);
     Natives.setLibre3kAuth(sensorptr,savedAuthorization);
+    // A newly scanned sensor can now be provisioned without retaining this GATT.
+    SensorLifecycle.changed();
     enableNotification(mBluetoothGatt,gattCharPatchDataControl);
     }
+
+
+
+/**
+ * Returns the minimum state needed by the direct-BLE Garmin app after this
+ * connection has completed Libre 3 authorization. Layout: PIN[4] followed by
+ * the 176-byte expanded challenge context. The returned buffer is a new copy.
+ *
+ * The security context is also reconstructed from the saved KAuth during
+ * init().  Do not require a live GATT/data cipher here: that would make the
+ * saved authorization unusable precisely when the phone cannot reconnect and
+ * the user wants to hand ownership to Garmin.
+ */
+public synchronized byte[] getGarminProvisioningSecret() {
+    if(!isWearable) {
+        byte[] context=securityContext==0L ? null :
+                Natives.libre3ExportChallengeContext(securityContext);
+        if(context==null || context.length!=176) {
+            // Normally init() has already imported this record. Retry explicitly
+            // for callbacks constructed while Bluetooth/native setup was changing.
+            byte[] savedAuthorization=Natives.getLibre3kAuth(sensorptr);
+            if(savedAuthorization==null || connected ||
+                    !initSecurityKeys(savedAuthorization,1))
+                return null;
+            context=Natives.libre3ExportChallengeContext(securityContext);
+            }
+        byte[] pin=Natives.getpin(sensorptr);
+        if(context==null || context.length!=176 || pin==null || pin.length!=4)
+            return null;
+        byte[] out=new byte[180];
+        arraycopy(pin,0,out,0,4);
+        arraycopy(context,0,out,4,176);
+        return out;
+        }
+    return null;
+    }
+
+/** Reconstruct provisioning from the saved authorization without creating a
+ * Bluetooth callback. Both temporary native handles are freed on every path. */
+public static byte[] getSavedGarminProvisioningSecret(String serial) {
+if(!isWearable) {
+    long dataptr=0L, security=0L;
+    try {
+        dataptr=Natives.getdataptr(serial);
+        if(dataptr==0L || Natives.getLibreVersion(dataptr)!=3) return null;
+        long sensorptr=Natives.getsensorptr(dataptr);
+        if(sensorptr==0L || !Natives.activeSensor(sensorptr)) return null;
+        byte[] saved=Natives.getLibre3kAuth(sensorptr), pin=Natives.getpin(sensorptr);
+        if(saved==null || pin==null || pin.length!=4) return null;
+        security=Natives.libre3BeginSecurityHandshake(0L);
+        if(security==0L || Natives.libre3SelectAppKeyAndSavedAuthorization(security,1,saved)!=1)
+            return null;
+        byte[] context=Natives.libre3ExportChallengeContext(security);
+        if(context==null || context.length!=176) return null;
+        byte[] secret=new byte[180];
+        arraycopy(pin,0,secret,0,4);
+        arraycopy(context,0,secret,4,176);
+        return secret;
+    } finally {
+        if(security!=0L) Natives.libre3FreeSecurityContext(security);
+        if(dataptr!=0L) Natives.freedataptr(dataptr);
+    }
+    }
+  return null;
+}
+    
+
+/** Switch this already-authorized Libre 3 sensor to the dedicated Garmin app. */
+//public boolean switchToGarmin() { return GarminLibre3.switchSensor(this); }
+
+/** Stop this callback owning/reconnecting the sensor after Garmin accepted it. */
+public void stopForGarmin() {
+    if(!isWearable) {
+        stop=true;
+        connected=false;
+        cancelretrytimer();
+        // Also defeats a connectDevice Runnable that may already have been queued.
+        mActiveBluetoothDevice=null;
+        close();
+        }
+    }
+
+@Override
+public boolean reconnect(long now,long delay) {
+    return stop || super.reconnect(now,delay);
+    }
+
+@Override
+public boolean connectDevice(long delayMillis) {
+    return stop || super.connectDevice(delayMillis);
+    }
+
+
+
+
 private void receivedCHALLENGE_DATA() {
     switch(rdtLength) {
         case 23: setr1none(rdtData); break;
@@ -620,7 +752,7 @@ private boolean    isPreAuthorized=false;
 private void onConnectGatt() {
     isPreAuthorized=false;
     }
-private boolean initSecurityKeys(byte[] savedAuthorization,int level) {
+private synchronized boolean initSecurityKeys(byte[] savedAuthorization,int level) {
     long context=Natives.libre3BeginSecurityHandshake(securityContext);
     if(context==0L) {
         securityContext=0L;
@@ -1077,6 +1209,78 @@ private boolean    lastphase5=false;
 
     @SuppressLint("MissingPermission")
 private long datatime=0L;
+
+/**
+ * Feed a Libre3 one-minute packet decrypted by the selected Garmin watch into
+ * Juggluco without requiring SensorBluetooth or a Libre3GattCallback instance.
+ * getdataptr() supplies a temporary native handle for the persistent sensor;
+ * the ordinary native save path and Applic.doglucose() then perform the same
+ * storage/current-value processing used for externally received glucose.
+ */
+public static synchronized boolean saveGarminLibre3Minute(String serial,byte[] decr,long timmsec) {
+    if(serial==null || decr==null || decr.length!=29 || timmsec<=0L) {
+        Log.e(LOG_ID,"bad Garmin Libre3 minute");
+        return false;
+        }
+    long dataptr=0L;
+    try {
+        dataptr=Natives.getdataptr(serial);
+        if(dataptr==0L) {
+            Log.e(LOG_ID,serial+": no dataptr for Garmin Libre3 minute");
+            return false;
+            }
+        long sensorptr=Natives.getsensorptr(dataptr);
+        if(sensorptr==0L) {
+            Log.e(LOG_ID,serial+": no sensorptr for Garmin Libre3 minute");
+            return false;
+            }
+        long res=Natives.saveLibre3MinuteL(sensorptr,decr,timmsec);
+        int glumgL=(int)(res&0xFFFFFFFFL);
+        if(glumgL!=0) {
+            int alarm=(int)((res>>48)&0xFFL);
+            short ratein=(short)((res>>32)&0xFFFFL);
+            float rate=ratein/1000.0f;
+            float gl=Applic.unit==1?glumgL/(Applic.mgdLmult*10.0f):glumgL/10.0f;
+            long sensorstartmsec=Natives.getSensorStartmsec(dataptr);
+            // Garmin Direct itself owns the Bluetooth-off policy. Passing true
+            // prevents a delayed backlog packet from disabling Bluetooth again
+            // after the user has switched Direct off. Libre3 is sensor generation 3.
+            Applic.doglucose(serial,(int)Math.round(glumgL/10.0f),gl,rate,alarm,
+                    timmsec,true,sensorstartmsec,sensorptr,3);
+            }
+        return true;
+        }
+    catch(Throwable th) {
+        Log.stack(LOG_ID,serial+": saving Garmin Libre3 minute",th);
+        return false;
+        }
+    finally {
+        if(dataptr!=0L) Natives.freedataptr(dataptr);
+        }
+    }
+
+/** Historical data must not pass through the live-value alarm/display path.
+ * This is the static equivalent of fast_data() after kind-5 decryption. */
+public static synchronized boolean saveGarminLibre3Clinical(String serial,byte[] decr) {
+    if(serial==null || decr==null || decr.length!=14) return false;
+    long dataptr=0L;
+    try {
+        dataptr=Natives.getdataptr(serial);
+        if(dataptr==0L) return false;
+        long sensorptr=Natives.getsensorptr(dataptr);
+        if(sensorptr==0L) return false;
+        // false also means "already present" in this native function. After a
+        // valid native call acknowledge duplicates, otherwise a lost ACK would
+        // leave the same record at the head of the watch's queue indefinitely.
+        Natives.saveLibre3fastData(sensorptr,decr);
+        if(Applic.app!=null) Applic.app.redraw();
+        return true;
+    } catch(Throwable th) {
+        Log.stack(LOG_ID,serial+": saving Garmin Libre3 clinical data",th);
+        return false;
+    } finally { if(dataptr!=0L) Natives.freedataptr(dataptr); }
+}
+
 private    void glucose_data(byte[] value,long timmsec) {
         if(doLog) {Log.i(LOG_ID, SerialNumber + ": "+"start glucose_data");};
         int len = value.length;

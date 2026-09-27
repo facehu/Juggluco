@@ -366,6 +366,14 @@ View[] durviews;
 				str = waitedit.getText().toString();
 				if (str != null) {
 					short wa = Short.parseShort(str);
+                    if(wa<0) {
+					    Applic.argToaster(context, context.getString(R.string.delay_can_t_be_negative)+wa, Toast.LENGTH_SHORT);
+                        return;
+                        }
+                    if(wa>4095) {
+                        Applic.argToaster(context, wa+context.getString(R.string.too_large_maximum_4095), Toast.LENGTH_SHORT);
+                        return;
+                        }
 					tk.glucodata.SuperGattCallback.writealarmsuspension(kind, wa);
 				    }
 			   }

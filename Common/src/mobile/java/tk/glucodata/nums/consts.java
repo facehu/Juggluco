@@ -59,6 +59,8 @@ public class consts {
  public static final int COLORBLACK=230;
  public static final int STOPALARM=231;
  public static final int GOTSTOPALARM=232;
+ public static final int NUMBERROLE=233;
+ public static final int LIBRE3DIRECT=234;
  public static final int NUMS=0;
  public static final int maxstorage=256;
 }

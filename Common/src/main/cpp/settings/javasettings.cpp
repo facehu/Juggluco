@@ -1510,6 +1510,7 @@ struct dose_t {
 
 #include "nums/numdata.hpp"
 extern void    setnumchanged(uint32_t tim);
+extern void toGarmin(int base);
 int savedoses(NovoPen *pen,uint32_t reftime,uint8_t *bytes,int len) {
     int type=pen->type;
     auto lasttime=pen->lasttime;
@@ -1586,6 +1587,8 @@ extern "C" JNIEXPORT jboolean  JNICALL   fromjava(oldnovopenvalue)(JNIEnv *env, 
     return pen->lasttime>dosetime;
     }
 extern "C" JNIEXPORT jint  JNICALL   fromjava(savenovopen)(JNIEnv *env, jclass cl,jlong referencetime,jstring jserial,jint type,jbyteArray jrawdoses,jboolean setlast) {
+   jint ret;
+   {
     NovoPen   *pen=getnovopen(env,jserial);
     if(!pen)  {
         return -1;
@@ -1602,9 +1605,11 @@ extern "C" JNIEXPORT jint  JNICALL   fromjava(savenovopen)(JNIEnv *env, jclass c
     destruct _dest([env,bytes,jrawdoses]() {
           env->ReleasePrimitiveArrayCritical(jrawdoses, bytes, JNI_ABORT);
         });
-    jint ret= savedoses(pen,referencetime,bytes,lens);
+    ret= savedoses(pen,referencetime,bytes,lens);
     if(setlast)
         pen->lasttime=time(nullptr);
+    }
+    toGarmin(0);
     return ret;
     }
 extern "C" JNIEXPORT void  JNICALL   fromjava(setnovopenttimeandtype)(JNIEnv *env, jclass cl,jlong time,jint type,jstring jserial) {

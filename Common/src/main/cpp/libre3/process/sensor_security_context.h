@@ -101,6 +101,9 @@ int l3_sensor_security_decrypt_challenge_response_into(
 int l3_sensor_security_export_saved_authorization_into(
     l3_sensor_security_context *context,
     uint8_t out149[L3_LEN_SAVED_AUTHORIZATION]);
+int l3_sensor_security_export_challenge_context_into(
+    l3_sensor_security_context *context,
+    uint8_t out176[L3_LEN_CHALLENGE_CONTEXT]);
 
 
 /* Diagnostic copy of current authorization-root material.  Returns 1 when a

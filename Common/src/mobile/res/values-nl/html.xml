@@ -131,8 +131,8 @@ keuzes zijn:</p>
 	</p></li>
 </ul>
 <p>Hoe de IOB-formules worden bepaald, wordt beschreven op de volgende webpagina: <a href="https://www.juggluco.nl/Juggluco/IOB/overview.html">https://www.juggluco.nl/Juggluco/IOB/overview.html</a></p>
-<p>Als u een snelwerkend insulinetype kent dat hier niet bij staat,
-kunt u mij een e-mail sturen.</p>
+<p>Als je een snelwerkend insulinetype kent dat hier niet bij staat,
+kunt je mij een e-mail sturen.</p>
 <p style="line-height: 100%; margin-bottom: 0in"><br/>
 
 </p>
@@ -245,7 +245,7 @@ en <a href="https://github.com/jonfawcett/LoopFollow">LoopFollow</a>
 <p style="line-height: 100%; margin-bottom: 0in"><span lang="nl-NL">Als
 je toegang wilt tot Juggluco via internet, moet je</span> <span lang="nl-NL">een
 poort &quot;</span><span lang="nl-NL"><i>forwarden&quot;</i></span>
-<span lang="nl-NL">vanaf uw modem. Zie</span></p>
+<span lang="nl-NL">vanaf je modem. Zie</span></p>
 <ul>
 	<li><p style="line-height: 100%; margin-bottom: 0in"><a href="https://www.makeuseof.com/tag/what-is-port-forwarding-and-how-can-it-help-me">https://www.makeuseof.com/tag/what-is-port-forwarding-and-how-can-it-help-me</a></p>
 	<li><p style="line-height: 100%; margin-bottom: 0in"><a href="https://www.juggluco.nl/Juggluco/phones/index.html">https://www.juggluco.nl/Juggluco/phones/index.html</a></p>
@@ -673,7 +673,7 @@ twee apparaten verbonden zijn via een onveilige verbinding, kan de
 data versleuteld en ondertekend worden door aan beide zeiden
 hetzelfde (maximaal) 16-letterige <b>wachtwoord</b> aan te geven.</p>
 <p style="line-height: 100%; margin-bottom: 0cm"><b>Verbindingsmethode</b>:
-Voor het thuisnetwerk kunt u kiezen uit verschillende
+Voor het thuisnetwerk kunt je kiezen uit verschillende
 verbindingsmethoden: 
 </p>
 <ul>
@@ -1546,7 +1546,7 @@ gecodeerd in UTF8.</p>
 .</p>
 <p><strong>Dagen</strong>: Vanaf Juggluco 7.1.0 kun je het aantal
 dagen selecteren dat je wilt opslaan. De einddatum is de rechterrand
-van het scherm. Als u gegevens uit het verleden in Juggluco bekijkt,
+van het scherm. Als je gegevens uit het verleden in Juggluco bekijkt,
 worden alleen oude gegevens geëxporteerd (hetzelfde als in het menu
 links in het midden -&gt; Statistieken).</p>
 <p><b>Gekalibreerd</b>: Gekalibreerde waarden opslaan. Met deze
@@ -1739,103 +1739,75 @@ om weg te gaan uit Juggluco.</p>
 <string name="kerfstok" >
 <![CDATA[
 <p><a href="https://www.juggluco.nl/Jugglucohelp/nl/index.html">index</a></p><p><a href="https://www.juggluco.nl/Jugglucohelp/ar/kerfstok.html">ar</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/be/kerfstok.html">be</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/de/kerfstok.html">de</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/es/kerfstok.html">es</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/fr/kerfstok.html">fr</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/hi/kerfstok.html">hi</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/it/kerfstok.html">it</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/ja/kerfstok.html">ja</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/ko/kerfstok.html">ko</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/nl/kerfstok.html">nl</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/pl/kerfstok.html">pl</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/pt/kerfstok.html">pt</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/ru/kerfstok.html">ru</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/tr/kerfstok.html">tr</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/uk/kerfstok.html">uk</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/uz/kerfstok.html">uz</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/zh/kerfstok.html">zh</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/kerfstok.html?lang=en">en</a>&emsp;&emsp;</p><h1>Kerfstok</h1>
-<p style="line-height: 100%; margin-bottom: 0in">Kerfstok
+<p style="line-height: 100%; margin-bottom: 0cm">Kerfstok
 (<a href="https://www.juggluco.nl/Kerfstok/index.html">https://www.juggluco.nl/Kerfstok/index.html</a>)
-is een horloge app voor programmeerbare Garmin sporthorloges. Sinds
-Kerfstok 1.6.0 kan het ook gebruikt worden op horloges zonder
-touchscreen. Kerfstok heeft de volgende functies:</p>
+is een horloge app voor programmeerbare Garmin sporthorloges.
+Kerfstok heeft de volgende functies:</p>
 <ul>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Je kunt nummers
+	<li><p style="line-height: 100%; margin-bottom: 0cm">Je kunt nummers
 	invoeren die ook met Juggluco uitgewisseld kunnen worden;</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Kerfstok kan
+	<li><p style="line-height: 100%; margin-bottom: 0cm">Kerfstok kan
 	stream glucose waarden ontvangen van Juggluco en continue weergeven;</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Kerfstok kan
+	<li><p style="line-height: 100%; margin-bottom: 0cm">Kerfstok kan
 	tijdens het sporten, snelheid en afgelegde afstand weergeven naast
 	je huidige glucose niveau en de sport activiteit opnemen zodat ze in
 	Garmin’s connect app weergegeven kunnen worden.</p></li>
 </ul>
-<p style="line-height: 100%; margin-bottom: 0in"><b>Problemen
-oplossen:</b></p>
-<p style="line-height: 100%; margin-bottom: 0in">Allereerst moet het
-horloge in de linkerbovenhoek verbonden (CONNECTED) getoond worden.</p>
-<p style="line-height: 100%; margin-bottom: 0in">Ten tweede moet
-Kerfstok opgestart zijn op je horloge.</p>
-<p style="line-height: 100%; margin-bottom: 0in">Om glucose waarden
-te ontvangen moet Glucose aangevinkt zijn.</p>
-<p style="line-height: 100%; margin-bottom: 0in">Als alles goed gaat,
-staat er overal <b>Yes</b> en staan er recente datums bij <b>Send</b>
-en <b>Receive</b>. De status moet <b>SUCCESS</b> zijn.</p>
-<p style="line-height: 100%; margin-bottom: 0in">Soms is de
-verbinding tussen smartphone en horloge verstoort. Als achter status
-“<span lang="en-US"><i><b>no status information</b></i></span>”
-staat, helpt meestal het volgende:</p>
+<p>Deze smartwatch-app kan via Bluetooth verbinding maken met
+Juggluco om hoeveelheden uit te wisselen en continu je huidige
+glucosewaarde weer te geven.</p>
+<p><b>Actief</b>: Verbind dit horloge met Juggluco.</p>
+<p><b>Nummers</b>: Voer nummers in op dit horloge en wissel ze uit
+met Juggluco. Meerdere horloges met Kerfstok kunnen tegelijkertijd de
+actuele glucosewaarde ontvangen, maar slechts één van deze horloges
+kan worden gebruikt voor het bekijken en invoeren van nummers.</p>
+<p><b>Glucose:</b> bepaalt of glucosewaarden naar het horloge worden
+verzonden.</p>
+<p><b>Verbindingsmethode</b>: Bepaal hoe je met het horloge wilt
+communiceren:</p>
 <ul>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Ga naar Android
-	<i>App-Info</i> van <i>Garmin Connect</i> en druk een aantal malen
-	op “<i>Stop forceren</i>”.</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Start <i>Garmin
-	Connect</i>. 
-	</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Ga terug naar
-	dit schermpje en druk op <i>Reinit</i>. 
-	</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Wacht op de
-	volgende glucose waarde van de sensor.</p></li>
+	<li><p><b>Garmin Connect:</b> Maak verbinding met het horloge via de
+	Garmin Connect-app.</p></li>
+	<li><p><b>Directe</b> <b>bluetooth</b>: Omzeil de Garmin Connect-app
+	en maak in plaats daarvan rechtstreeks verbinding met het horloge
+	via Bluetooth Low Energy. Dit kan worden gebruikt, zelfs als de
+	Garmin Connect-app niet is geïnstalleerd, maar ook terwijl de app
+	actief is. Het is zelfs mogelijk om de Garmin Connect-app helemaal
+	niet te gebruiken door het horloge te koppelen via de
+	Bluetooth-instellingen van Android.</p></li>
+	<li><p><b>Automatisch</b>: eerst wordt geprobeerd te verzenden via
+	Garmin Connect en als dat niet werkt, wordt directe bluetooth
+	geprobeerd. De daadwerkelijk gebruikte methode wordt weergegeven
+	boven \'<i>Verbindingsmethode</i>\'.</p></li>
 </ul>
-<p style="line-height: 100%; margin-bottom: 0in">Als
-<b>FAILURE_DURING_TRANSFER</b> als status weergegeven wordt, helpt
-het soms Bluetooth uit en aan te zetten en daarna op <i>Reinit</i> te
-drukken. Als dat niet help moet je meestal Kerfstok afsluiten en je
-horloge rebooten. Daarna moet je Kerfstok weer opstarten en er op
-toezien dat hier <i>Glucose</i> aangevinkt is. Soms werkte het pas na
-meerdere keren of ontstaan er ook “<i>no status information</i>”
-fouten die op de eerder beschreven manier afgehandeld moeten worden.
-In zeldzame gevallen moet je smartphone gereboot worden.</p>
-<p style="line-height: 100%; margin-bottom: 0in">Soms wordt een knop
-met de naam &quot;<b>Send Queue&quot;</b> weergegeven; dit betekent
-dat er berichten zijn die nog niet naar het horloge zijn verzonden.
-Normaal gesproken worden ze automatisch verzonden op het juiste
-moment, maar soms werd dit onderbroken en door op <i>Send queue</i>
-te drukken wordt het verzenden voortgezet. Maar als het niet is
-verzonden vanwege een verbroken verbinding, heeft dit weinig nut.
-Door op <i>Send Queue</i> te drukken tijdens een lopende transactie
-kan de verbinding worden verbroken.</p>
-<p style="line-height: 100%; margin-bottom: 0in">Soms wanneer &quot;<i>Send
-Queue</i>&quot; wordt weergegeven, is er een verbindingsprobleem
-waardoor berichten alleen van de telefoon naar het horloge worden
-verzonden, maar niet andersom. Dit is het geval wanneer de tijd na
-&quot;<i>Receive</i> &quot; ouder is dan de tijd na &quot;<i>Send</i>&quot;.
-Om dit te herstellen, moet je opnieuw een of alle van de volgende
-handelingen uitvoeren, een of meerdere keren:</p>
+<p><b>Directe sensor- (*) telefoon ( ) horloge verbinding (Libre3)</b>:
+Deze optie is beschikbaar wanneer Libre 3 Kerfstok op het
+Garmin-horloge draait. Door dit in te stellen op &quot;<i>horloge</i>&quot;
+maakt Libre 3 Kerfstok rechtstreeks verbinding met de Libre 3-sensor.
+Op deze manier is de telefoon niet langer nodig om de glucosewaarden
+op je horloge te zien.</p>
+<p><a href="https://www.juggluco.nl/Jugglucohelp/garminconfig.html"><b>Config</b></a>:
+stel de donkere modus, snelkoppelingen en ID in.</p>
+<p><b>Sync</b>: gegevens naar het horloge verzenden en gegevens van
+het horloge ontvangen.</p>
+<p><b>Reinit</b>: De verbinding opnieuw initialiseren.</p>
+<h1>Probleemoplossing</h1>
+<p>Probeer sommige of alle van het volgende als de verbinding met het
+horloge niet werkt:</p>
 <ul>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Druk op <i>Reinit</i>
-	starten;</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Druk op
-	“Gedwongen stoppen” van de Garmin Connect-app en start deze
-	opnieuw, gevolgd door <i>Reinit</i>;</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Schakel
-	Bluetooth uit en weer in;</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Reboot het
-	horloge;</p></li>
-	<li><p style="line-height: 100%; margin-bottom: 0in">Reboot the
-	telefoon.</p></li>
+	<li><p>Druk op <i>reinit</i>;</p></li>
+	<li><p>Schakel Bluetooth op je telefoon uit en weer in;</p></li>
+	<li><p>Schakel Bluetooth op het horloge uit en weer in;</p></li>
+	<li><p>Wijzig de verbindingsmethode en zet deze eventueel later weer
+	terug;</p></li>
+	<li><p>Herstart het horloge;</p></li>
+	<li><p>Telefoon opnieuw opstarten;</p></li>
+	<li><p>Voorheen was het soms nodig om Garmin Connect te starten,
+	geforceerd af te sluiten en opnieuw te starten, of zelfs gegevens in
+	Garmin Connect te wissen of Garmin Connect opnieuw te installeren.
+	Dit zou met Juggluco 11.0.0 en latere versies niet meer nodig moeten
+	zijn.</p></li>
 </ul>
-<p>Ik heb een aantal keer meegemaakt dat er verbindingsproblemen bleven bestaan, zelfs nadat ik de bovenstaande stappen had uitgevoerd. Het probleem werd opgelost door <b>Garmin Connect</b> opnieuw te installeren of, via de app-info van Garmin Connect, de opslag te wissen en de app opnieuw te openen. Omdat Garmin Connect gegevens op een internetserver opslaat, kun je de app opnieuw installeren zonder gegevens te verliezen. Na het wissen van de gegevens hoefde ik zelfs niet opnieuw in te loggen; ik hoefde alleen maar een aantal machtigingen te verlenen.</p>
-<p style="line-height: 100%; margin-bottom: 0in"><b>Sync</b>:
-Hoeveelheden die nog niet verzonden zijn worden hiermee tussen
-horloge en telefoon uitgewisseld. Normaal hoeft hiervan geen gebruik
-gemaakt te worden.</p>
-<p style="line-height: 100%; margin-bottom: 0in"><b>Refresh</b>:
-Ververst dit schermpje met nieuwe informatie (bijvoorbeeld na Reinit
-of Sync).</p>
-<p style="line-height: 100%; margin-bottom: 0in"><b>Glucose</b>: Het
-verzenden van glucosewaarden naar Kerfstok staat aan.</p>
-<p style="line-height: 100%; margin-bottom: 0in"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0in"><br/>
-
-</p>
 ]]>
 </string>
 <string name="labelhelp" >
@@ -2001,7 +1973,7 @@ van Juggluco. Logbestanden kunnen worden gemaakt in
 logberichten die Juggluco zelf maakt. logcat.txt bevat logberichten
 die Android maakt met betrekking tot Juggluco. Je kunt ze verwijderen
 en apart opslaan.</p>
-<p style="line-height: 100%; margin-bottom: 0in"><span lang="nl-NL">Als u problemen ondervindt, kunt u trace.log en logcat.txt naar <a href="mailto:jaapkorthalsaltes@gmail.com?subject=Log%20files">jaapkorthalsaltes@gmail.com</a> sturen, samen met een beschrijving van de problemen die je hebt ondervonden in de periode waarin deze logbestanden zijn gemaakt.</span></p>
+<p style="line-height: 100%; margin-bottom: 0in"><span lang="nl-NL">Als je problemen ondervindt, kunt je trace.log en logcat.txt naar <a href="mailto:jaapkorthalsaltes@gmail.com?subject=Log%20files">jaapkorthalsaltes@gmail.com</a> sturen, samen met een beschrijving van de problemen die je hebt ondervonden in de periode waarin deze logbestanden zijn gemaakt.</span></p>
 <p style="line-height: 100%; margin-bottom: 0in">
 
 </p>
@@ -2191,7 +2163,7 @@ manier gezocht.</p>
 <![CDATA[
 <p><a href="https://www.juggluco.nl/Jugglucohelp/nl/index.html">index</a></p><p><a href="https://www.juggluco.nl/Jugglucohelp/ar/reminders.html">ar</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/be/reminders.html">be</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/de/reminders.html">de</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/es/reminders.html">es</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/fr/reminders.html">fr</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/hi/reminders.html">hi</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/it/reminders.html">it</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/ja/reminders.html">ja</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/ko/reminders.html">ko</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/nl/reminders.html">nl</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/pl/reminders.html">pl</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/pt/reminders.html">pt</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/ru/reminders.html">ru</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/tr/reminders.html">tr</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/uk/reminders.html">uk</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/uz/reminders.html">uz</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/zh/reminders.html">zh</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/reminders.html?lang=en">en</a>&emsp;&emsp;</p><h1>Herinneringen</h1><p style="line-height: 100%; margin-bottom: 0in"><i>Herinneringen</i>
 herinneren je eraan als je een bepaalde hoeveelheid niet ingevoerd
-hebt binnen een bepaald tijdsinterval. Door op <b>N</b><b>i</b><b>e</b><b>u</b><b>w</b>
+hebt binnen een bepaald tijdsinterval. Door op <b>nieuw</b>
 te drukken kun je een nieuwe herinnering toevoegen.</p>
 <p style="line-height: 100%; margin-bottom: 0in">Geef de begin- en
 eindtijd van de periode waarin je de aangegeven hoeveelheid onder de
@@ -2407,7 +2379,7 @@ Dit kan een probleem zijn bij WearOS-horloges. Deze optie heeft geen
 invloed op Libre 3- en US Libre 2-sensoren.</font></p>
 <p><b>Bug</b>: alleen aanwezig op WearOS voor Libre 3. Dit moet ingesteld zijn op Samsung Galaxy Watch 5 en hoger, totdat Samsung deze bug verhelpt. Zonder deze optie worden glucosewaarden om de 2 in plaats van 1 minuut ontvangen.</p>
 <p><b>Ontkoppelen</b>: Linx/Lumiflex/Aidex X-sensoren onthouden de telefoon of het horloge waarmee ze zijn gekoppeld en weigeren verbinding te maken met andere apparaten. Door op \'Ontkoppelen\' te drukken, wordt een commando naar de sensor gestuurd. Als dit lukt, kunnen andere telefoons of horloges weer verbinding maken met de sensor. Wanneer je via het linkermenu → Horloges → WearOS-config → \'Directe sensor-...\' de sensor van en naar het horloge overzet, wordt de ontkoppeling ook uitgevoerd en hoeft je \'Ontkoppelen\' niet te gebruiken.</p>
-<p><b>Wissen</b>: (Deze knop is alleen beschikbaar bij verbinding met Linx/Lumiflex/Aidex X-sensoren.) Door op deze knop te drukken worden alle glucosewaarden van de sensor verwijderd en wordt de sensor opnieuw opgestart alsof het een nieuwe sensor is. Hierdoor kunt u een sensor langer dan 15 dagen gebruiken. Toen ik het probeerde, waren de waarden die na de vervaldatum van de sensor werden ontvangen volkomen waardeloos; ze hadden ongeveer de helft van de waarde van de Libre 3-sensor die ik er parallel mee gebruikte.</p>
+<p><b>Wissen</b>: (Deze knop is alleen beschikbaar bij verbinding met Linx/Lumiflex/Aidex X-sensoren.) Door op deze knop te drukken worden alle glucosewaarden van de sensor verwijderd en wordt de sensor opnieuw opgestart alsof het een nieuwe sensor is. Hierdoor kunt je een sensor langer dan 15 dagen gebruiken. Toen ik het probeerde, waren de waarden die na de vervaldatum van de sensor werden ontvangen volkomen waardeloos; ze hadden ongeveer de helft van de waarde van de Libre 3-sensor die ik er parallel mee gebruikte.</p>
 <p style="border: none; padding: 0in">⏰<font face="Times New Roman">:
 Laat Juggluco een wekkerfunctie gebruiken om de verbinding met Dexcom
 G7/</font><font face="Times New Roman">ONE+</font><font face="Times New Roman">-sensoren
@@ -2777,7 +2749,7 @@ om uit verschillende stemmen te kunnen kiezen. Deze opties zijn te
 vinden door te zoeken naar <i>tekst-naar-spraak</i> of <i>spraakuitvoer</i>
 in Android-instellingen of door naar <i>Taal en invoer -&gt;Tekst</i>
 <i>naar</i> <i>spraak/Geavanceerd-&gt;Spraakuitvoer</i> te gaan. Hier
-kunt u &quot;<i>Spraakservices van</i> <i>Google</i>&quot;/&quot;<i>Google
+kun je &quot;<i>Spraakservices van</i> <i>Google</i>&quot;/&quot;<i>Google
 text-naar-spraak engine</i>&quot; selecteren en spraakgegevens
 installeren. Op andere telefoons staat dit onder
 <i>Systeeminstellingen-&gt;Toegankelijkheid&gt;Zicht-&gt;Tekst</i>
@@ -2941,7 +2913,7 @@ minimale temperatuur 6. De richting van verandering bepaalt het
 weerpictogram: sneeuw is dalende glucose, regen is stijgende glucose.
 Het wordt ook in de huidige temperatuur gezet. Groter dan nul
 betekent stijgende glucose, lager dan nul betekent dalende glucose.</font></p>
-<h2 class="western"><font size="3" style="font-size: 12pt"><a href=https://www.juggluco.nl/Jugglucohelp/kerfstok.html">Kerfstok</a></font></h2>
+<h2 class="western"><font size="3" style="font-size: 12pt"><a href="https://www.juggluco.nl/Jugglucohelp/kerfstok.html">Kerfstok</a></font></h2>
 <p style="line-height: 100%; margin-bottom: 0in"><font size="3" style="font-size: 12pt"><span lang="nl-NL">Kerfstok
 is een horloge app voor sommige Garmin horloges waarmee je nummers
 kunt invoeren (bijvoorbeeld insuline doses), maar ook de huidige
@@ -3233,11 +3205,13 @@ gebruiken die gegevens uit Juggluco gebruiken.</p>
 onder <b>additions</b> op de Juggluco-webserver. Wanneer je een
 bestand met de naam “<i>mypage.html</i>” uploadt, kun je dit via
 <a href="http://127.0.0.1:17580/additions/mypage.html">http://127.0.0.1:17580/additions/mypage.html</a>
-in de webbrowser op deze telefoon bekijken.<br/>
+in de webbrowser op deze telefoon bekijken. Als je na het uploaden
+van een bestand op de bestandsnaam tikt, wordt het bestand ook in de
+webbrowser geopend.<br/>
 <br/>
-<b>Bestanden
-uploaden</b> kopieert een of meer geselecteerde bestanden naar de map
-die momenteel wordt weergegeven.</p>
+<b>Bestanden uploaden</b> kopieert een
+of meer geselecteerde bestanden naar de map die momenteel wordt
+weergegeven.</p>
 <p><b>Map uploaden</b> kopieert een volledige mappenstructuur.
 Bestaande bestanden met dezelfde naam worden vervangen.<br/>
 <br/>
@@ -3250,6 +3224,41 @@ erin staat.</p>
 <p>Als je de opdrachtregelversie van de Juggluco-server gebruikt,
 plaats je de bestanden in plaats daarvan in de map additions onder
 jugglucodata.</p>
+]]>
+</string>
+<string name="garmin_alarms" >
+<![CDATA[
+<p><a href="https://www.juggluco.nl/Jugglucohelp/nl/index.html">index</a></p><p><a href="https://www.juggluco.nl/Jugglucohelp/de/garmin_alarms.html">de</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/nl/garmin_alarms.html">nl</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/garmin_alarms.html?lang=en">en</a>&emsp;&emsp;</p><h1>Alarmen</h1><p>Hier
+kun je alarmen instellen voor de Garmin Watch-app Libre 3 Kerfstok. Je kunt een alarm instellen voor een <b>lage</b> bloedglucosewaarde, een alarm voor een <b>hoge</b> bloedglucosewaarde en een alarm dat afgaat wanneer de watch-app gedurende een bepaald
+aantal minuten geen nieuwe bloedglucosewaarde ontvangt
+(<b>signaalverlies</b>). Na het klikken op \'Opslaan\' worden deze instellingen naar het horloge
+verzonden. Onder <b>Alert</b> kun je de specifieke details van het alarm opgeven.
+</p>
+<p>
+<br/>
+<br/>
+
+</p>
+]]>
+</string>
+<string name="garmin_alert" >
+<![CDATA[
+<p><a href="https://www.juggluco.nl/Jugglucohelp/nl/index.html">index</a></p><p><a href="https://www.juggluco.nl/Jugglucohelp/de/garmin_alert.html">de</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/nl/garmin_alert.html">nl</a>&emsp;&emsp;<a href="https://www.juggluco.nl/Jugglucohelp/garmin_alert.html?lang=en">en</a>&emsp;&emsp;</p><h1>Alert</h1>
+<p><b>Geluid</b>: schakel het geluid voor alarmen in (alleen
+beschikbaar op enkele horloges).</p>
+<p><b>Trillen</b>: laat het horloge trillen als het alarm af gaat.</p>
+<p><b>Duur</b>: hoe lang moet het horloge trillen of een geluid maken
+wanneer er een alarm afgaat?</p>
+<p><b>Minuten gedeactiveerd</b>: hoe lang moet er gewacht worden
+nadat het alarm is afgegaan, voordat het opnieuw wordt geactiveerd
+als de situatie aanhoudt? Bijvoorbeeld: als er om 7:30 uur een alarm
+voor een lage bloedglucosewaarde afgaat en er 20 minuten zijn
+ingesteld, en de bloedglucosewaarde blijft laag, dan wordt het alarm
+pas na 7:50 uur opnieuw geactiveerd.</p>
+<p><br/>
+<br/>
+
+</p>
 ]]>
 </string>
 </resources>

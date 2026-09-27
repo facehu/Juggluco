@@ -180,6 +180,9 @@ static bool         wrongNeighbours(const SensorGlucoseData *sens,int startsen,i
     const auto mgdLmax=theval+maxglucosedifference;
     for(int itpos=valuepos-1;itpos>=startsen;--itpos) {
         auto it=getdata<DT>(sens,itpos);
+        if(!it->valid())
+            continue;
+        
         if(it->gettime()<=startInterval)
             break;
         const auto val=it->getmgdL();
@@ -194,7 +197,9 @@ static bool         wrongNeighbours(const SensorGlucoseData *sens,int startsen,i
     const uint32_t endInterval=value->gettime()+maxneighbourtimedifference;
     for(int itpos=valuepos+1;itpos<endsen;++itpos) {
         auto it=getdata<DT>(sens,itpos);
-            if(it->gettime()>=endInterval)
+        if(!it->valid())
+            continue;
+         if(it->gettime()>=endInterval)
                 break;
         const auto val=it->getmgdL();
         if(val<mgdLmin||val>mgdLmax) {

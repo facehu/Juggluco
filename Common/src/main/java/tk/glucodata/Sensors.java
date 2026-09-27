@@ -175,6 +175,8 @@ Sensors(MainActivity act,boolean givehelp,boolean select) {
         public  void onProgressChanged (SeekBar seekBar, int progress, boolean fromUser) {
             var warmup=progressToValue(progress,minvalue);
             minutes.setText(MessageFormat.format(prefix, warmup));
+            if(warmup<=minvalue)
+                warmup=0;
             Natives.setManualWarmupMinutes(sensorptr,warmup);
             act.requestRender();
             }
@@ -274,6 +276,7 @@ Sensors(MainActivity act,boolean givehelp,boolean select) {
 
 private static void useAgain(MainActivity act,long sensorptr) {
     if(Natives.useAgain(sensorptr)) {
+           SensorLifecycle.added(sensorptr);
            var res=SensorBluetooth.updateDevices();
            SuperGattCallback.glucosealarms.setLossAlarm();
            if(res) {
@@ -306,16 +309,8 @@ static    void show(MainActivity act,String text, long sensorptr) {
    ViewGroup.LayoutParams params;
     if(!isWearable) {
         scroll.setBackgroundResource(R.drawable.dialogbackground);
-  //      scroll.measure(WRAP_CONTENT, WRAP_CONTENT);
- //       var width=GlucoseCurve.getwidth();
-//        scroll.setX((width-scroll.getMeasuredWidth()+MainActivity.systembarLeft-MainActivity.systembarRight)*.5f);
-        params =
-            new FrameLayout.LayoutParams(
-                    WRAP_CONTENT,
-                    WRAP_CONTENT,
-                    Gravity.CENTER|Gravity.CENTER_HORIZONTAL);
+        params = new FrameLayout.LayoutParams( WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER|Gravity.CENTER_HORIZONTAL);
         }
-           // Layout.getMargins(scroll).topMargin=MainActivity.systembarTop;
     else {
          int param=isWearable?MATCH_PARENT:WRAP_CONTENT;
          params=new ViewGroup.LayoutParams(param,param);
@@ -323,13 +318,11 @@ static    void show(MainActivity act,String text, long sensorptr) {
         }
 
    act.addMyContentView(scroll, params);
-//    act.addMyContentView(sensors.viewgroup, new ViewGroup.LayoutParams(param,param));
-    MainActivity.setonback(() -> {
+   MainActivity.setonback(() -> {
             removeContentView(sensors.viewgroup);
             act.sensorsVisible=false;
             });
      }
 
 }
-
 

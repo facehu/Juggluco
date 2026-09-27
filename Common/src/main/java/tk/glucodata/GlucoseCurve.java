@@ -131,7 +131,7 @@ static   public float smallfontsize;
  final   private GestureDetector mGestureDetector;
     static final int STEPBACK = 1;
     boolean waitnfc = false;
-    MyRenderer render;
+public    MyRenderer render;
     static int height=0,width=0;
     private DisplayManager displayManager;
     private int lastDisplayRotation=-1;

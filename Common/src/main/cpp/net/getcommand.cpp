@@ -111,6 +111,7 @@ static            bool savefileonce(const struct fileonce_t *gegs);
 
 
 extern bool javaUpdateDevices();
+extern void setusedsensors() ;
 static bool updateDevices() {
     LOGAR("before deletelast()");
     sensors->deletelast();
@@ -118,7 +119,7 @@ static bool updateDevices() {
     sensors->setindices();
     backup->resendResetDevices();
     sendstartsensors(sensors->last());
-     
+    setusedsensors();
     return  javaUpdateDevices();
     }
 

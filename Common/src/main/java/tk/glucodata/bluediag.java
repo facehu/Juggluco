@@ -193,7 +193,6 @@ void showinfo(final SuperGattCallback gatt,MainActivity act) {
        streamhistory.setVisibility(VISIBLE);
       alarmclock.setVisibility(GONE);
       resetbutton.setVisibility(GONE);
-      divorcebutton.setVisibility(GONE);
         }
     else  {
       streamhistory.setVisibility(GONE);
@@ -1079,21 +1078,23 @@ else {
     divorcebutton.setOnClickListener( v -> {
             if(gatts!=null&&gattselected<gatts.size()) {
                 final SuperGattCallback gatt = gatts.get(gattselected);
-                if(gatt.sensorgen!=0x50) {
-                    final String message="ERROR: divorcebutton on sensorgen="+gatt.sensorgen;
-                    Log.i(LOG_ID,message);
-                    Applic.Toaster(message);
-                    }
-                Confirm.ask(act,gatt.SerialNumber,act.getString(R.string.divorcemessage),()-> {
-                    var aid=(AidexXGattCallback)gatt;
-                    aid.startUnpair( new UnpairOverlayHost(act,R.string.releasingsensor),res -> {
-                        aid.finishSensor();
-                        SensorBluetooth.sensorEnded(aid.SerialNumber);
-                        act.requestRender();
-                        return true;
-                        });
-                    act.doonback();
-                 });
+                  {
+                    if(gatt.sensorgen!=0x50) {
+                        final String message="ERROR: divorcebutton on sensorgen="+gatt.sensorgen;
+                        Log.i(LOG_ID,message);
+                        Applic.Toaster(message);
+                        }
+                    Confirm.ask(act,gatt.SerialNumber,act.getString(R.string.divorcemessage),()-> {
+                        var aid=(AidexXGattCallback)gatt;
+                        aid.startUnpair( new UnpairOverlayHost(act,R.string.releasingsensor),res -> {
+                            aid.finishSensor();
+                            SensorBluetooth.sensorEnded(aid.SerialNumber);
+                            act.requestRender();
+                            return true;
+                            });
+                        act.doonback();
+                     });
+                     }
               }
       });
     clear.setOnClickListener( v -> {

@@ -37,7 +37,7 @@ public class NFC {
 
 
 private static final String LOG_ID="NFC";
-public static	long   	second(byte[] nfc1,Tag tag) {
+public static	long   	second(byte[] nfc1,Tag tag,tk.glucodata.GlucoseCurve curve) {
 	long nowsec=(long)Math.round(System.currentTimeMillis()/1000.0);
 //	long nowsec=Natives.getLibre3secs(nfc1);
 //	if(nowsec==0L) return 0L;
@@ -57,7 +57,9 @@ public static	long   	second(byte[] nfc1,Tag tag) {
         System.arraycopy(metcrc, 0, command, secstart.length, metcrc.length);
 	{if(doLog){showbytes("NFC command2: ",command);};}
         var second= AlgNfcV.wholenfccmd(tag,command);
-	return interpret3NFC2(nfc1,second,nowsec);
+        long[] uit={0L};
+	curve.render.sensorid=interpret3NFC2(nfc1,second,nowsec,uit);
+        return uit[0];
 	}
 
 

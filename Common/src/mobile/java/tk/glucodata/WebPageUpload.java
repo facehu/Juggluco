@@ -632,6 +632,30 @@ public final class WebPageUpload {
         }
     }
 
+    /** Open an uploaded file through Juggluco's local HTTP server. */
+    private static void openInBrowser(MainActivity context,File entry) {
+        if(entry==null||entry.isDirectory()||rootDirectory==null)
+            return;
+        try {
+            String root=rootDirectory.getCanonicalPath();
+            String path=entry.getCanonicalPath();
+            String prefix=root+File.separator;
+            if(!path.startsWith(prefix))
+                return;
+
+            String relative=path.substring(prefix.length()).replace(File.separatorChar,'/');
+            String secret=Natives.getApiSecret();
+            String secretPath=(secret==null||secret.isEmpty())?"":"/"+Uri.encode(secret);
+            String url="http://127.0.0.1:"+Natives.gethttpport()+secretPath+"/"+ADDITIONS+"/"
+                    +Uri.encode(relative,"/");
+            Intent intent=new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+            context.startActivity(intent);
+        }
+        catch(Throwable th) {
+            Log.stack(LOG_ID,"openInBrowser",th);
+        }
+    }
+
     private static void enterDirectory(MainActivity context,File directory) {
         if(busy||!validDirectory(directory))
             return;
@@ -805,6 +829,7 @@ public final class WebPageUpload {
                 name.setText(entry.getName()+"   "+formatSize(entry.length()));
                 int pad=(int)(GlucoseCurve.metrics.density*8.0f);
                 name.setPadding(pad,0,pad,0);
+                name.setOnClickListener(v->openInBrowser(context,entry));
                 row.addView(name,new LinearLayout.LayoutParams(0,WRAP_CONTENT,1.0f));
             }
 

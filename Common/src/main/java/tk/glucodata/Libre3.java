@@ -37,7 +37,7 @@ public static byte[] firstnfc(Tag tag) {
 	return res;
 	}
 
-public static	long   	libre3NFC(Tag tag) {
+public static	long   	libre3NFC(Tag tag,GlucoseCurve curve) {
 	byte[] res = firstnfc(tag);
 	if(res == null) {
 		{if(doLog) {Log.i(LOG_ID,"firstnfc==null");};};
@@ -47,7 +47,7 @@ public static	long   	libre3NFC(Tag tag) {
         return 2L;
         }
 	if(libreVersion == 3) {
-		long streamptr=tk.glucodata.libre3.NFC.second(res,tag);
+		long streamptr=tk.glucodata.libre3.NFC.second(res,tag,curve);
 //		SensorBluetooth.resetDevice(streamptr);
 		{if(doLog) {Log.i(LOG_ID,"streamptr="+streamptr);};};
 		return streamptr;

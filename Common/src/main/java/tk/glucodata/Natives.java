@@ -82,7 +82,7 @@ public static native void startsensors( );
 
 	public static native void setlocale(String loc,int sdk);
      public static native int step();
-    public static native int badscan(int kind);
+    public static native int badscan(int kind,String sensorid);
 //    public static native long lastpoll();
     //    public static native void clear();
     public static native void prevscr();
@@ -584,7 +584,8 @@ public static native String getGuardianLastNameName( );
 
 
 //public static native long interpret3NFC1(byte[] b);
-public static native long interpret3NFC2(byte[] nfc1,byte[] b,long time);
+//public static native long interpret3NFC2(byte[] nfc1,byte[] b,long time);
+public static native String interpret3NFC2( byte[]  nfc1ar,byte[] jnfcout,long now,long[] longreturn);
 public static native long getLibre3secs(byte[]  nfc1ar);
 public static native long getLibre3Sensorptr(String sensorid,long starttime);
 public static native long getLibre3SensorptrPD(String sensorid,long starttime,byte[] pin,String deviceaddress);
@@ -628,6 +629,7 @@ static native byte[] libre3CreateEphemeralPublicKey(long securityContext);
 static native int libre3DeriveAuthorizationRoot(long securityContext, byte[] patchEphemeralPublicKey);
 static native byte[] libre3EncryptChallengeReply(long securityContext, byte[] nonce, byte[] plaintext);
 static native byte[] libre3DecryptChallengeResponse(long securityContext, byte[] nonce, byte[] ciphertext);
+static native byte[] libre3ExportChallengeContext(long securityContext);
 static native byte[] libre3ExportSavedAuthorization(long securityContext);
 
 

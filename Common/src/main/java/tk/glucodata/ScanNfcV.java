@@ -138,9 +138,10 @@ public static void startvibration(Vibrator vibrator) {
 static private int[] libre3scan(GlucoseCurve curve,MainActivity main, Vibrator vibrator,Tag tag) {
     int value=0;
     int ret = 0x100000;
-    if(android.os.Build.VERSION.SDK_INT >= 26) {
+  //  if(android.os.Build.VERSION.SDK_INT >= 26) 
+    {
         long streamptr;
-        streamptr=libre3NFC(tag);
+        streamptr=libre3NFC(tag,curve);
         vibrator.cancel();
         if(streamptr==2L) {
             {if(doLog) {Log.i(LOG_ID,"streamptr==2");};};
@@ -166,11 +167,13 @@ static private int[] libre3scan(GlucoseCurve curve,MainActivity main, Vibrator v
                         };break;
                     case 5: {
                         {if(doLog) {Log.i(LOG_ID,"terminated");};};
+                        SensorLifecycle.changed();
                         ret=13;
                         break;
                         }
                     case 6: {
                         {if(doLog) {Log.i(LOG_ID,"ended");};};
+                        SensorLifecycle.changed();
                         ret=4;
                         break;
                         }
@@ -196,6 +199,7 @@ static private int[] libre3scan(GlucoseCurve curve,MainActivity main, Vibrator v
                     ret = 0xFC;
                     value=1;
                     askcalendar=true;
+                   // curve.render.sensorid=name;
                     curve.render.badscan =calendar(main, ret, name);
                     }
                 }
@@ -207,11 +211,8 @@ static private int[] libre3scan(GlucoseCurve curve,MainActivity main, Vibrator v
         }
         if(ret!=0xFC)
             failure(vibrator);
-           }
-       else  {
-              {if(doLog) {Log.i(LOG_ID,"No Libre 3 Android <8");};};
-              ret=0xF9;
-              }
+       }
+//       else  { {if(doLog) {Log.i(LOG_ID,"No Libre 3 Android <8");};}; ret=0xF9; }
     curve.requestRender();
     return new int[]{ret,value};
     }
@@ -229,6 +230,7 @@ static public synchronized void scan(GlucoseCurve curve,Tag tag) {
     var vibrator=getvibrator(main);
     startvibration(vibrator);
     curve.render.stepresult=GlucoseCurve.STEPBACK;
+    curve.render.sensorid=null;
         {
     if(!Natives.gethaslibrary()) {
         vibrator.cancel();
@@ -248,13 +250,6 @@ static public synchronized void scan(GlucoseCurve curve,Tag tag) {
                     }
                 {if(doLog) {Log.i(LOG_ID,"TAG::sensid="+sensid);};};
                 }
-/*
-        if(uid.length==8&&uid[6]!=7) {
-               int[] uit= libre3scan(curve,main,vibrator,tag);
-               ret=uit[0];
-               value=uit[1];
-              }
-        else  */
             {
             var isLibre3=uid.length==8&&uid[6]!=7;
             byte[] info = AlgNfcV.nfcinfotimes(tag,(isLibre3||doLog)?1:10);
@@ -272,20 +267,20 @@ static public synchronized void scan(GlucoseCurve curve,Tag tag) {
                     }
                 else  {
                     byte[] data;
+                    var sensorident=Natives.getserial(uid,info);
+                    curve.render.sensorid= sensorident ;
                     if((data = AlgNfcV.readNfcTag(tag,uid,info)) != null) {
                         curve.render.badscan =0xff;
                         curve.requestRender();
                         if(doLog) {Log.d(LOG_ID,"Read Tag");};
-                        /*showbytes("uid",uid);};}
-                        {if(doLog){showbytes("info",info);};}
-                        {if(doLog){showbytes("data",data); */
                         int uit = Natives.nfcdata(uid, info, data);
                         value = uit & 0xFFFF;
                         Log.format("glucose=%.1f\n",(float)value/mgdLmult);
                         ret = uit >> 16;
                         if(newdevice!=null&& Arrays.equals(newdevice,uid)&& Applic.app.canusebluetooth() ) {
                             if(value!=0|| (ret&0xFF)==5||(ret&0xFF)==7) {
-                                if(SensorBluetooth.resetDevice(Natives.getserial(uid,info)))
+//                                sensorident=Natives.getserial(uid,info);
+                                if(SensorBluetooth.resetDevice(sensorident))
                                     askpermission=true;
                                 newdevice=null;
                                 }
@@ -299,7 +294,7 @@ static public synchronized void scan(GlucoseCurve curve,Tag tag) {
                                 break;
                                 }
                             case 9: {
-                                String sensorident = Natives.getserial(uid, info);
+//                                sensorident = Natives.getserial(uid, info);
                                 {if(doLog) {Log.d(LOG_ID, "Streaming enabled, resetDevice " + sensorident);};};
                                 if(SensorBluetooth.resetDevice(sensorident))
                                     askpermission=true;
@@ -307,7 +302,9 @@ static public synchronized void scan(GlucoseCurve curve,Tag tag) {
                                 ret=0;
                                     break;
                             case 4: 
-                                 SensorBluetooth.sensorEnded(Natives.getserial(uid, info)); ;break;
+//                                  sensorident=Natives.getserial(uid, info);
+                                 SensorBluetooth.sensorEnded(sensorident); 
+                                 break;
                             case 3: {
                                 if (value == 0) {
                                 
@@ -343,7 +340,7 @@ static public synchronized void scan(GlucoseCurve curve,Tag tag) {
                                         vibrator.vibrate(newsensorwait, -1);
                                     else
                                         vibrator.vibrate(VibrationEffect.createWaveform(newsensorwait, -1));
-                                    String sensorident = Natives.getserial(uid, info);
+//                                    sensorident = Natives.getserial(uid, info);
                                     curve.render.badscan = calendar(main,ret,sensorident);
                                 };break;
                                 case 0x87:  mayEnablestreaming(tag,uid,info); 
@@ -354,7 +351,8 @@ static public synchronized void scan(GlucoseCurve curve,Tag tag) {
                                         vibrator.vibrate(newsensorVib, -1);
                                     else
                                         vibrator.vibrate(VibrationEffect.createWaveform(newsensorVib, -1));
-                                    String sensorident = Natives.getserial(uid, info);
+//                                    sensorident = Natives.getserial(uid, info);
+                                 //   curve.render.sensorid= sensorident ;
                                     curve.render.badscan =calendar(main,ret,sensorident);
             //                        ret=0;
                                     break;

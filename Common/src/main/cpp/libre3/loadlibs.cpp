@@ -372,6 +372,21 @@ fromjava(libre3DecryptChallengeResponse)(JNIEnv *env, jclass, jlong context,
 }
 
 extern "C" JNIEXPORT jbyteArray JNICALL
+fromjava(libre3ExportChallengeContext)(JNIEnv *env, jclass, jlong context) {
+    l3_sensor_security_context *security = security_context_from_handle(context);
+    if (!security) return nullptr;
+
+    return make_fixed_byte_array<L3_LEN_CHALLENGE_CONTEXT>(env,
+        [security](std::uint8_t *out) {
+            const int rc = l3_sensor_security_export_challenge_context_into(security, out);
+#ifndef NOLOG
+            LOGGER("libre3ExportChallengeContext(%p) rc=%d\n", static_cast<void *>(security), rc);
+#endif
+            return rc;
+        });
+}
+
+extern "C" JNIEXPORT jbyteArray JNICALL
 fromjava(libre3ExportSavedAuthorization)(JNIEnv *env, jclass, jlong context) {
     l3_sensor_security_context *security = security_context_from_handle(context);
     if (!security) return nullptr;
