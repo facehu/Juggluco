@@ -263,7 +263,7 @@ jlong SiContext::interpret_data(SensorGlucoseData *sens,int sensorindex,uint32_t
         const std::size_t record_count = pkt.status();
         const std::size_t decoded_size = std::size_t(pkt.length()) - 3u;
         const std::size_t required_size = sizeof(glucoseRecordsStart) +
-                record_count * sizeof(glucoseItem) + sizeof(glucoseRecordsEnd);
+                record_count * sizeof(glucoseItem) + sizeof(glucoseRecordsEnd) - 1u;
         if (required_size > decoded_size) {
             LOGGER("glucose packet too short: length=%u records=%zu decoded=%zu required=%zu\n",
                    pkt.length(), record_count, decoded_size, required_size);
